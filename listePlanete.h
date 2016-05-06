@@ -1,8 +1,15 @@
 #ifndef LISTPLA_H
 #define LISTPLA_H
 
-typedef struct planete_base planete;
-typedef struct liste_planete_base* liste_planete;
+typedef struct planete_base {
+	char* nom;
+	int nbPlaces; /* nombre de places restantes */
+} * planete;
+
+typedef struct liste_planete_base {
+	planete val;
+	liste_planete next;
+} * liste_planete;
 
 /*	@requires : nothing
 	@assigns : nothing
