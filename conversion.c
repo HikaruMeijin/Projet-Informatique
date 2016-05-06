@@ -7,8 +7,9 @@
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
-#include "liste_planete.h"
-#include "liste_personne.h"
+
+#include "listePlanete.h"
+#include "listePersonne.h"
 #include "tas.h"
 
 #define BUFSIZE 256
@@ -18,55 +19,55 @@ void inserecara(char * chaine, char caractere)
 {
     int i = strlen(chaine) ;
     chaine[i] = caractere ;
-    chaine[i+1] ="\0" ;
+    chaine[i+1] ='\0' ;
 }
 
 tas convertir_t_personne(FILE * f1,FILE * f2)
 {
-    tas tasP = creerTas() ;
+    tas tasP = creer_Tas() ;
     char tampon1[BUFSIZE] ;
     char tampon2[BUFSIZE] ;
     char tmp[30] ; //tampon pour contenir la chaine de caractere de chaque case de la ligne
-    while(fgets(tampon1,BUFSIZE,f1) != EOF) //tant qu'on peut lire une ligne du tableau de souhait
+    while(fgets(tampon1,BUFSIZE,f1)) //tant qu'on peut lire une ligne du tableau de souhait
     {
         fgets(tampon2,BUFSIZE,f2) ; //on lit le fichier de priorité ligne par ligne
         personne personneTraite ; //on cree une variable ou vont etre stockees les infos des personnes
         int i = 0 ; //variable pour le parcours de la ligne
-        while (strcmp(tampon1[i],"\0")!=0) //tant que la ligne n'est pas finie
+        while (tampon1[i] != '\0') //tant que la ligne n'est pas finie
         {
             int j=1 ; //variable pour savoir quelle information on a traitee
             int k = 1 ; //variable pour savoir quelle zone est traitee
-            if(strcmp(tampon1[i],",")==0) //on est tombé sur le délimitateur de case
+            if(tampon1[i]==',') //on est tombé sur le délimitateur de case
             {
-                switch j :
+                switch (j)
                 {
                     case 1 :
                     {
-                            personneTraite.nom = tmp ;
+                            sprintf(personneTraite->nom,"%s",tmp) ;
                             break ;
                     }
                     case 2 :
                     {
-                            personneTraite.prenom = tmp ;
+                            sprintf(personneTraite->prenom,"%s",tmp) ;
                             break ;
                     }
                     case 3 :
                     {
                             if(strcmp(tmp,"satellites")==0)
                             {
-                                personneTraite.id1 = 1 ; //le premier choix est fixe sur la croisiere satellite
+                                personneTraite->id1 = 2 ; //le premier choix est fixe sur la croisiere satellite
                             }
                             else if(strcmp(tmp,"vie")==0)
                             {
-                                personneTraite.id1 = 2 ; //le premier choix est fixe sur la croisiere vie
+                                personneTraite->id1 = 3 ; //le premier choix est fixe sur la croisiere vie
                             }
                             else if(strcmp(tmp,"planetes")==0)
                             {
-                                personneTraite.id1 = 3 ; //le premier choix est fixe sur la croisiere planetes
+                                personneTraite->id1 = 1 ; //le premier choix est fixe sur la croisiere planetes
                             }
                             else if(strcmp(tmp,"libre")==0)
                             {
-                                personneTraite.id1 = 4 ; //le premier choix est fixe sur la croisiere libre
+                                personneTraite->id1 = 4 ; //le premier choix est fixe sur la croisiere libre
                             }
                             else //cas où le type de croisière n'est pas reconnu
                             {
@@ -79,19 +80,19 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                     {
                             if(strcmp(tmp,"satellites")==0)
                             {
-                                personneTraite.id2 = 1 ; //le premier choix est fixe sur la croisiere satellite
+                                personneTraite->id2 = 2 ; //le premier choix est fixe sur la croisiere satellite
                             }
                             else if(strcmp(tmp,"vie")==0)
                             {
-                                personneTraite.id2 = 2 ; //le premier choix est fixe sur la croisiere vie
+                                personneTraite->id2 = 3 ; //le premier choix est fixe sur la croisiere vie
                             }
                             else if(strcmp(tmp,"planetes")==0)
                             {
-                                personneTraite.id2 = 3 ; //le premier choix est fixe sur la croisiere planetes
+                                personneTraite->id2 = 1 ; //le premier choix est fixe sur la croisiere planetes
                             }
                             else if(strcmp(tmp,"libre")==0)
                             {
-                                personneTraite.id2 = 4 ; //le premier choix est fixe sur la croisiere libre
+                                personneTraite->id2 = 4 ; //le premier choix est fixe sur la croisiere libre
                             }
                             else //cas où le type de croisière n'est pas reconnu
                             {
@@ -100,88 +101,88 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                             }
                             break ;
                     }
-                    case 5 : //on traite le premier souhait
+                    case 5 : //on traite le premier souhait 
                     {
-                        if(personneTraite.id1 == 1)
+                        if(personneTraite->id1 == 1)
                         {
-                            switch k :
+                            switch (k)
                             {
                               case 1 :
                               {
-                                  personneTraite.tabChxOrg1[0] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg1[0],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 2 :
                               {
-                                  personneTraite.tabChxOrg1[1] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg1[1],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 3 :
                               {
-                                  personneTraite.tabChxOrg1[2] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg1[2],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 4 :
                               {
-                                  personneTraite.tabChxOrg1[3] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg1[3],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 5 :
                               {
-                                  personneTraite.tabChxOrg1[4] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg1[4],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 6 :
                               {
-                                  personneTraite.tabChxOrg1[5] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg1[5],"%s",tmp) ;
                                   j=j+2 ;
                                   k= 1 ;
                                   break ;
                               }
                             }
                         }
-                        else if(personneTraite.id2 == 1)
+                        else if(personneTraite->id2 == 1)
                         {
-                            switch k :
+                            switch (k)
                             {
                               case 1 :
                               {
-                                  personneTraite.tabChxOrg2[0] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg2[0],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 2 :
                               {
-                                  personneTraite.tabChxOrg2[1] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg2[1],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 3 :
                               {
-                                  personneTraite.tabChxOrg2[2] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg2[2],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 4 :
                               {
-                                  personneTraite.tabChxOrg2[3] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg2[3],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 5 :
                               {
-                                  personneTraite.tabChxOrg2[4] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg2[4],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 6 :
                               {
-                                  personneTraite.tabChxOrg2[5] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg2[5],"%s",tmp) ;
                                   j=j+2 ;
                                   k= 1 ;
                                   break ;
@@ -204,86 +205,86 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                     }
                     case 6 : //on traite le deuxieme souhait
                     {
-                        if(personneTraite.id1 == 3)
+                        if(personneTraite->id1 == 2)
                         {
-                            switch k :
+                            switch (k)
                             {
                               case 1 :
                               {
-                                  personneTraite.tabChxOrg1[0] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg1[0],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 2 :
                               {
-                                  personneTraite.tabChxOrg1[1] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg1[1],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 3 :
                               {
-                                  personneTraite.tabChxOrg1[2] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg1[2],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 4 :
                               {
-                                  personneTraite.tabChxOrg1[3] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg1[3],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 5 :
                               {
-                                  personneTraite.tabChxOrg1[4] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg1[4],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 6 :
                               {
-                                  personneTraite.tabChxOrg1[5] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg1[5],"%s",tmp) ;
                                   j=j+2 ;
                                   k= 1 ;
                                   break ;
                               }
                             }
                         }
-                        else if(personneTraite.id2 == 3)
+                        else if(personneTraite->id2 == 2)
                         {
-                            switch k :
+                            switch (k)
                             {
                               case 1 :
                               {
-                                  personneTraite.tabChxOrg2[0] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg2[0],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 2 :
                               {
-                                  personneTraite.tabChxOrg2[1] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg2[1],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 3 :
                               {
-                                  personneTraite.tabChxOrg2[2] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg2[2],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 4 :
                               {
-                                  personneTraite.tabChxOrg2[3] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg2[3],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 5 :
                               {
-                                  personneTraite.tabChxOrg2[4] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg2[4],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 6 :
                               {
-                                  personneTraite.tabChxOrg2[5] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg2[5],"%s",tmp) ;
                                   j=j+2 ;
                                   k= 1 ;
                                   break ;
@@ -306,86 +307,86 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                     }
                     case 7 : //on traite le troisieme souhait
                     {
-                        if(personneTraite.id1 == 2)
+                        if(personneTraite->id1 == 3)
                         {
-                            switch k :
+                            switch (k)
                             {
                               case 1 :
                               {
-                                  personneTraite.tabChxOrg1[0] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg1[0],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 2 :
                               {
-                                  personneTraite.tabChxOrg1[1] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg1[1],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 3 :
                               {
-                                  personneTraite.tabChxOrg1[2] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg1[2],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 4 :
                               {
-                                  personneTraite.tabChxOrg1[3] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg1[3],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 5 :
                               {
-                                  personneTraite.tabChxOrg1[4] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg1[4],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 6 :
                               {
-                                  personneTraite.tabChxOrg1[5] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg1[5],"%s",tmp) ;
                                   j=j+2 ;
                                   k= 1 ;
                                   break ;
                               }
                             }
                         }
-                        else if(personneTraite.id2 == 2)
+                        else if(personneTraite->id2 == 3)
                         {
-                            switch k :
+                            switch (k) 
                             {
                               case 1 :
                               {
-                                  personneTraite.tabChxOrg2[0] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg2[0],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 2 :
                               {
-                                  personneTraite.tabChxOrg2[1] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg2[1],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 3 :
                               {
-                                  personneTraite.tabChxOrg2[2] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg2[2],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 4 :
                               {
-                                  personneTraite.tabChxOrg2[3] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg2[3],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 5 :
                               {
-                                  personneTraite.tabChxOrg2[4] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg2[4],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 6 :
                               {
-                                  personneTraite.tabChxOrg2[5] = tmp ;
+                                  sprintf(personneTraite->tabChxOrg2[5],"%s",tmp) ;
                                   j=j+2 ;
                                   k= 1 ;
                                   break ;
@@ -408,41 +409,41 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                     }
                     case 8 :
                     {
-                        switch k :
+                        switch (k)
                             {
                               case 1 :
                               {
-                                  personneTraite.tabChxLib[0] = tmp ;
+                                  sprintf(personneTraite->tabChxLib[0],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 2 :
                               {
-                                  personneTraite.tabChxLib[1] = tmp ;
+                                  sprintf(personneTraite->tabChxLib[1],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 3 :
                               {
-                                  personneTraite.tabChxLib[2] = tmp ;
+                                  sprintf(personneTraite->tabChxLib[2],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 4 :
                               {
-                                  personneTraite.tabChxLib[3] = tmp ;
+                                  sprintf(personneTraite->tabChxLib[3],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 5 :
                               {
-                                  personneTraite.tabChxLib[4] = tmp ;
+                                  sprintf(personneTraite->tabChxLib[4],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 6 :
                               {
-                                  personneTraite.tabChxLib[5] = tmp ;
+                                  sprintf(personneTraite->tabChxLib[5],"%s",tmp) ;
                                   j=j+2 ;
                                   k= 1  ;
                                   break ;
@@ -451,7 +452,7 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                     }
                 }
                 j=j+1 ;
-                tmp[0] = "\0" ;
+                tmp[0] = '\0' ;
             }
             else
             {
@@ -459,22 +460,22 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
             }
         }
         i=0 ;
-        tmp[0] = "\0" ;
-        while (strcmp(tampon2[i],"\0")!=0) //tant que la ligne n'est pas finie
+        tmp[0] = '\0' ;
+        while (tampon2[i] !='\0') //tant que la ligne n'est pas finie
             {
                 int j = 1 ;
-                if(strcmp(tampon2[i],",")==0) //on est tombé sur le délimitateur de case
+                if(tampon2[i] == ',') //on est tombé sur le délimitateur de case
                 {
                     if(j==3)
                     {
-                        personneTraite.priorite = atoi(tmp) ;
-                        if(personneTraite.id1 != 4)
+                        personneTraite->priorite = atoi(tmp) ;
+                        if(personneTraite->id1 != 4)
                         {
-                            personneTraite.priorite = personneTraite.priorite + 1000 ;
+                            personneTraite->priorite = personneTraite->priorite + 1000 ;
                         }
                     }
                     j=j+1 ;
-                    tmp[0] = "\0" ;
+                    tmp[0] = '\0' ;
                 }
                 else
                 {
@@ -483,7 +484,7 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                 i=i+1 ;
 
             }
-        inserer(personneTraite,tas) ;
+        inserer(personneTraite,&tasP) ;
     }
     return tasP ;
 
@@ -500,31 +501,31 @@ liste_planete * convertir_t_planete ( FILE * f )
     char tampon1[BUFSIZE] ;
     char tmp[30] ; //variable pour contenir le nom de la planete
     char tmp2[30] ; //variable pour contenir le nombre de place dispo
-    while(fgets(tampon1,BUFSIZE,f) != EOF) //tant qu'on peut lire une ligne du tableau de plenete
+    while(fgets(tampon1,BUFSIZE,f)) //tant qu'on peut lire une ligne du tableau de plenete
     {
         planete planeteTraitee ; //tampon planete
         int i = 0 ; //variable pour le parcours de la ligne
-        while (strcmp(tampon1[i],"\0")!=0) //tant que la ligne n'est pas finie
+        while (tampon1[i] != '\0') //tant que la ligne n'est pas finie
         {
             int j = 0 ;
-            if(strcmp(tampon1[i],",")==0)
+            if(tampon1[i] == ',')
             {
-                while(strcmp(tampon1[i],",")!=0 && strcmp(tampon1[i],"\0")!=0 )
+                while(tampon1[i] != ',' && tampon1[i] != '\0')
                 {
-                    inserecara(tmp2,tampon[i]) ;
+                    inserecara(tmp2,tampon1[i]) ;
                     i=i+1 ;
                 }
-                if (tmp[0] != "\0") //il existe des cas ou dans le tableau pour des planete d'une meme zone, il n'y a que des virgules avant ou apres
+                if (tmp[0] != '\0') //il existe des cas ou dans le tableau pour des planete d'une meme zone, il n'y a que des virgules avant ou apres
                 {
-                    planete.nom = tmp ;
-                    planete.place = atoi(tmp2) ;
+                    sprintf(planeteTraitee->nom,"%s",tmp) ;
+                    planeteTraitee->nbPlaces = atoi(tmp2) ;
                     insererplanete(Tabplanete,planeteTraitee,j) ;
 
                 }
                 j=j+1 ;
-                tmp[0] = "\0" ;
-                tmp2[0] ="\0" ;
-                if(tampon1[i] == "\0") //cas où on est arrivé a la fin de la ligne dans l'affectation de planete
+                tmp[0] = '\0' ;
+                tmp2[0] ='\0' ;
+                if(tampon1[i] == '\0') //cas où on est arrivé a la fin de la ligne dans l'affectation de planete
                 {
                     i=i-1 ;
                 }
@@ -543,10 +544,13 @@ liste_planete * convertir_t_planete ( FILE * f )
 int nombreligne(FILE * f)
 {
     int i=0 ;
-    while(fgets(BUFSIZE,f) != EOF) //tant qu'on peut lire une ligne du tableau
+    char tampon[BUFSIZE] ;
+    while( fgets(tampon,BUFSIZE,f) ) //tant qu'on peut lire une ligne du tableau
+	i=i+1 ;
+    return i ;
 }
 
-planete * convertir_contrainte (FILE * f)
+char*** convertir_contrainte (FILE * f)
 {
     char*** TabContrainte = malloc( 2*sizeof(char**)) ;
     char tampon1[BUFSIZE] ;
@@ -559,14 +563,14 @@ planete * convertir_contrainte (FILE * f)
         TabContrainte[j] = malloc(i*sizeof(char*)) ;
     }
     j = 0 ; //la j-eme ligne de contrainte
-    while(fgets(tampon1,BUFSIZE,f1) != EOF) //tant qu'on peut lire une ligne du tableau de contrainte
+    while(fgets(tampon1,BUFSIZE,f)) //tant qu'on peut lire une ligne du tableau de contrainte
     {
        i = 0 ; //variable pour le parcours de la ligne
-       while (strcmp(tampon1[i],"\0")!=0) //tant que la ligne n'est pas finie
+       while (tampon1[i] != '\0') //tant que la ligne n'est pas finie
        {
-           if(strcmp(tampon1[i],",")==0)
+           if(tampon1[i] == ',')
            {
-               while(strcmp(tampon1[i],"\0")!=0)
+               while(tampon1[i] != '\0')
                {
                    inserecara(tmp2,tampon1[i]) ;
                    i=i+1 ;
@@ -583,22 +587,23 @@ planete * convertir_contrainte (FILE * f)
        }
        j=j+1 ;
     }
+    return TabContrainte ;
 }
 
-ajout_ligne ( personne Personne , FILE * file) ;
+void ajout_ligne ( personne Personne , FILE * file)
 {
-    char[300] ligne ;
-    if(Personne.chxFin == 1)
+    char ligne[300] ;
+    if(Personne->chxFin == 1)
     {
-        sscanf(ligne,"%s,%s,%s,%s,%s,%s,%s,%s\n",Personne.nom,Personne.prenom,Personne.tabChxOrg1[0],Personne.tabChxOrg1[1],Personne.tabChxOrg1[2],Personne.tabChxOrg1[3],Personne.tabChxOrg1[4],Personne.tabChxOrg1[5]) ;
+        sscanf(ligne,"%s,%s,%s,%s,%s,%s,%s,%s\n",Personne->nom,Personne->prenom,Personne->tabChxOrg1[0],Personne->tabChxOrg1[1],Personne->tabChxOrg1[2],Personne->tabChxOrg1[3],Personne->tabChxOrg1[4],Personne->tabChxOrg1[5]) ;
     }
-    else if (Personne.chxFin == 2)
+    else if (Personne->chxFin == 2)
     {
-        sscanf(ligne,"%s,%s,%s,%s,%s,%s,%s,%s\n",Personne.nom,Personne.prenom,Personne.tabChxOrg2[0],Personne.tabChxOrg2[1],Personne.tabChxOrg2[2],Personne.tabChxOrg2[3],Personne.tabChxOrg2[4],Personne.tabChxOrg2[5]) ;
+        sscanf(ligne,"%s,%s,%s,%s,%s,%s,%s,%s\n",Personne->nom,Personne->prenom,Personne->tabChxOrg2[0],Personne->tabChxOrg2[1],Personne->tabChxOrg2[2],Personne->tabChxOrg2[3],Personne->tabChxOrg2[4],Personne->tabChxOrg2[5]) ;
     }
-    else if (Personne.chxFin == 3)
+    else if ((Personne->chxFin) == 3)
     {
-        sscanf(ligne,"%s,%s,%s,%s,%s,%s,%s,%s\n",Personne.nom,Personne.prenom,Personne.tabChxLib[0],Personne.tabChxLib[1],Personne.tabChxLib[2],Personne.tabChxLib[3],Personne.tabChxLib[4],Personne.tabChxLib[5]) ;
+        sscanf(ligne,"%s,%s,%s,%s,%s,%s,%s,%s\n",Personne->nom,Personne->prenom,Personne->tabChxLib[0],Personne->tabChxLib[1],Personne->tabChxLib[2],Personne->tabChxLib[3],Personne->tabChxLib[4],Personne->tabChxLib[5]) ;
     }
     fseek(file,0,SEEK_END) ; //on se place a la fin du fichier
     fwrite(ligne,sizeof(ligne),1,file) ; // on ecrit la ligne
