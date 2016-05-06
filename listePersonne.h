@@ -1,8 +1,22 @@
 #ifndef LISTPER_H
 #define LISTPER_H
 
-typedef struct personne_base * personne;
-typedef struct liste_personne_base * liste_personne;
+typedef struct personne_base {
+	int priorite;
+	char* nom;
+	char* prenom;
+	int id1; // identifiant choix 1
+	int id2; // identifiant choix 2
+	char* tabChxOrg1[6];
+	char* tabChxOrg2[6];
+	char* tabChxLib[6];
+	int chxFin; // entier qui indique le choix attribué à la fin à l'individu (0 : chxLib; 1 : chxOrg1 ; 2 : chxOrg2)
+} * personne;
+
+typedef struct liste_personne_base {
+	personne val;
+	struct liste_personne_base * next;
+}  * liste_personne;
 
 /*	@requires : nothing
 	@assigns : nothing
@@ -20,8 +34,9 @@ int liste_personne_vide(liste_personne);
 void inserer_liste_personne(liste_personne*, personne);
 
 /*	@requires : pointeur sur liste de personne et personne valides
-	@assigns : la liste de personne
-	@ensures : retire la personne de la liste */
-personne retirer_liste_personne(liste_personne*, personne);
+	@assigns : la liste de personne *listPer
+	@ensures : si per est présente dans *listPer, retire per de *listPer et retourne 0;
+			   	 sinon, retourne  -1 */
+int retirer_liste_personne(liste_personne*, personne);
 
 #endif /* LISTPER_H */

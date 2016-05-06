@@ -1,7 +1,7 @@
 #ifndef LISTPLA_H
 #define LISTPLA_H
 
-typedef struct planete planete;
+typedef struct planete_base planete;
 typedef struct liste_planete_base* liste_planete;
 
 /*	@requires : nothing
