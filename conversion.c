@@ -24,7 +24,7 @@ void inserecara(char * chaine, char caractere)
 
 tas convertir_t_personne(FILE * f1,FILE * f2)
 {
-    tas tasP = creer_Tas() ;
+    tas tasP = creer_tas() ;
     char tampon1[BUFSIZE] ;
     char tampon2[BUFSIZE] ;
     char tmp[30] ; //tampon pour contenir la chaine de caractere de chaque case de la ligne
@@ -492,12 +492,12 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
 
 void insererplanete(liste_planete * Tabplanete,planete planeteTraitee, int j)
 {
-    inserer(&Tabplanete[j],planeteTraitee) ;
+    inserer_liste_planete(&Tabplanete[j] , planeteTraitee) ;
 }
 
 liste_planete * convertir_t_planete ( FILE * f )
 {
-    liste_planete * Tabplanete= malloc(7*sizeof(liste_planete)) ;
+    liste_planete * Tabplanete = malloc(7*sizeof(liste_planete)) ;
     char tampon1[BUFSIZE] ;
     char tmp[30] ; //variable pour contenir le nom de la planete
     char tmp2[30] ; //variable pour contenir le nombre de place dispo
@@ -520,7 +520,6 @@ liste_planete * convertir_t_planete ( FILE * f )
                     sprintf(planeteTraitee->nom,"%s",tmp) ;
                     planeteTraitee->nbPlaces = atoi(tmp2) ;
                     insererplanete(Tabplanete,planeteTraitee,j) ;
-
                 }
                 j=j+1 ;
                 tmp[0] = '\0' ;
