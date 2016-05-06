@@ -1,10 +1,10 @@
 #ifndef TAS_H
 #define TAS_H
 
-#include "liste_personne.h"
-#include "liste_planete.h"
+#include "listePersonne.h"
+#include "listePlanete.h"
 
-typedef struct tas_base* tas
+typedef struct tas_base* tas;
 
 /*@requires nothing
   @ensigns nothing
@@ -29,12 +29,12 @@ personne retirer_tas(tas*);
 /*@requires pointeur sur tas valide
   @ensigns nothing
   ensures compare la racine au fils droit et agit en consequence */
-int comparaison_priorite_fd(tas*, int);
+void comparaison_priorite_fd(tas*, int);
 
 /*@requires pointeur sur tas valide
   @ensigns nothing
   ensures compare la racine au fils gauche et agit en consequence */
-int comparaison_priorite_fg(tas*, int);
+void comparaison_priorite_fg(tas*, int);
 
 /*@requires pointeur sur tas valide
   @ensigns tas
