@@ -59,7 +59,7 @@ void reorganiser_tas(tas* t){
 		else if((*t)->tableau[2*i+2]==NULL){ //Si pas de fils droit
 			if((*t)->tableau[2*i+1]==NULL) break;
 			else{ // Si le fils de gauche existe
-				if ((*(*t)->tableau[i])->priorite < (*((*t)->tableau[2*i+1]))->priorite) comparaison_priorite_fg(t,i);
+				if ((*((*t)->tableau[i]))->priorite < (*((*t)->tableau[2*i+1]))->priorite) comparaison_priorite_fg(t,i);
 				else break;
 			}
 		}
