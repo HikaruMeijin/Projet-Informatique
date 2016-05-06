@@ -36,7 +36,7 @@ personne retirer_tas(tas* t){
 }
 
 int comparaison_priorite_fd(tas* t, int i){
-	if (t->tableau[i].priorite < t->tableau[2*i+2].priorite){
+	if (*(t->tableau[i])->priorite < *(t->tableau[2*i+2])->priorite){
 		tmp = t->tableau[i]; //Compare dans le cas où on devrait inverser avec le fils droit
 		t->tableau[i] = t->tableau[2*i+2];
 		t->tableau[2*i+2] = tmp;
@@ -46,7 +46,7 @@ int comparaison_priorite_fd(tas* t, int i){
 }
 
 int comparaison_priorite_fg(tas* t, int i){
-	if (t->tableau[i].priorite < t->tableau[2*i+1].priorite){
+	if (*(t->tableau[i])->priorite < *(t->tableau[2*i+1])->priorite){
 		tmp = t->tableau[i]; //Compare dans le cas où on devrait inverser avec le fils gauche
 		t->tableau[i] = t->tableau[2*i+1];
 		t->tableau[2*i+1] = tmp;
@@ -75,7 +75,7 @@ void reorganiser_tas(tas* t){
 			}
 		}
 		else {
-			if(t->tableau[2*i+1].priorite >= t->tableau[2*i+2].priorite){ 
+			if(*(t->tableau[2*i+1])->priorite >= *(t->tableau[2*i+2])->priorite){ 
 				i=comparaison_priorite_fg(t,i);
 				else break; //Si le fils gauche est plus petit que la racine
 			}
