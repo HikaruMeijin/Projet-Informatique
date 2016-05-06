@@ -2,16 +2,6 @@
 #include <stdio.h>
 #include "listePlanete.h"
 
-struct planete_base {
-	char* nom;
-	int nbPlaces; /* nombre de places restantes */
-};
-
-struct liste_planete_base {
-	planete val;
-	liste_planete next;
-};
-
 liste_planete creer_liste_planete()
 {
 	return NULL;
