@@ -2,6 +2,23 @@
 #include <stdio.h>
 #include "listePersonne.h"
 
+struct personne_base {
+	int priorite;
+	char* nom;
+	char* prenom;
+	int id1; // identifiant choix 1
+	int id2; // identifiant choix 2
+	char* tabChxOrg1[6];
+	char* tabChxOrg2[6];
+	char* tabChxLib[6];
+	int chxFin; // entier qui indique le choix attribué à la fin à l'individu (0 : chxLib; 1 : chxOrg1 ; 2 : chxOrg2)
+};
+
+struct liste_personne_base {
+	personne val;
+	liste_personne next;
+};
+
 liste_personne creer_liste_personne()
 {
 	return NULL;
@@ -40,39 +57,19 @@ int retirer_liste_personne(liste_personne* listPer, personne toRemove)
 {
 	if (listPer == NULL) { exit(EXIT_FAILURE); }
 
-	if (!liste_personne_vide(*listPer)) /* si *listPer est non vide */
+	liste_personne* toModify = listPer;
+	liste_personne curLink = *toModify;
+
+	while (curLink != NULL && curLink->val != toRemove)
 	{
-		liste_personne curLink = *listPer; /* Affectation de curLink en tête de *listPer */
-		
-		if (curLink->val == toRemove) /* si toRemove se trouve en tête de *listPer */
-		{ 
-			*listPer = curLink->next; /* alors réaffecter la tête de *listPer au chaînon suivant */
-			free(curLink); /* et libérer l'espace occupé par la tête précédente de la liste */
-			
-			if (*listPer == NULL) { free(listPer); } /* si la liste se retrouve vide, libérer l'espace qu'elle occupe */
-			
-			return 0;
-		}
-		else /* si toRemove ne se trouve pas en tête de *listPer */
-		{
-			while (curLink->next != NULL) /* parcours de *listPer */
-			{
-				if (curLink->next->val == toRemove) /* si toRemove est la valeur du chaînon suivant */
-				{
-					liste_personne toDisappear = curLink->next;
-					curLink->next = toDisappear->next; /* alors réaffecter le chaînon suivant à celui qui suit */
-					free(toDisappear); /* et libérer l'espace occupé par le chaînon de valeur toRemove */
-					
-					return 0;
-				}
-				else { curLink = curLink->next; }
-			} /* boucle nécessairement car curLink->next devient forcément NULL si toRemove n'a pas été trouvé */
-			return -1;
-		}
+		toModify = &curLink->next;
+		curLink = *toModify;
 	}
-	else /* if (*listPer == NULL) [en principe, ce cas n'arrive jamais si seule cette fonction de retrait est utilisée] */ 
-	{
-		free(listPer);
-		return -1;
-	}
+
+	if (curLink == NULL) { return -1; }
+
+	*toModify = curLink->next;
+	free(curLink);
+
+	return 0;
 }
