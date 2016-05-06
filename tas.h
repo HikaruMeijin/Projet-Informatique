@@ -4,12 +4,10 @@
 #include "listePersonne.h"
 #include "listePlanete.h"
 
-struct tas_base {
+typedef struct tas_base {
   personne* tableau;
   int prochain_vide;
-};
-
-typedef struct tas_base* tas;
+} * tas;
 
 /*@requires nothing
   @ensigns nothing

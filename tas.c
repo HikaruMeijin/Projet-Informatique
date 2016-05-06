@@ -52,24 +52,24 @@ void reorganiser_tas(tas* t){
 		if((*t)->tableau[2*i+1]==NULL){ //Si pas de fils gauche
 			if((*t)->tableau[2*i+2]==NULL) break; 
 			else{ //Si le fils droit existe
-				if ((*((*t)->tableau[i]))->priorite < (*((*t)->tableau[2*i+2]))->priorite) comparaison_priorite_fd(t,i);
+				if ((*((*t)->tableau[i])).priorite < (*((*t)->tableau[2*i+2])).priorite) comparaison_priorite_fd(t,i);
 				else break;
 			}
 		}
 		else if((*t)->tableau[2*i+2]==NULL){ //Si pas de fils droit
 			if((*t)->tableau[2*i+1]==NULL) break;
 			else{ // Si le fils de gauche existe
-				if ((*((*t)->tableau[i]))->priorite < (*((*t)->tableau[2*i+1]))->priorite) comparaison_priorite_fg(t,i);
+				if ((*((*t)->tableau[i])).priorite < (*((*t)->tableau[2*i+1])).priorite) comparaison_priorite_fg(t,i);
 				else break;
 			}
 		}
 		else {
-			if((*((*t)->tableau[2*i+1]))->priorite >= (*((*t)->tableau[2*i+2]))->priorite){ 
-				if ((*((*t)->tableau[i]))->priorite < (*((*t)->tableau[2*i+1]))->priorite) comparaison_priorite_fg(t,i);
+			if((*((*t)->tableau[2*i+1])).priorite >= (*((*t)->tableau[2*i+2])).priorite){ 
+				if ((*((*t)->tableau[i])).priorite < (*((*t)->tableau[2*i+1])).priorite) comparaison_priorite_fg(t,i);
 				else break; //Si le fils gauche est plus petit que la racine
 			}
 			else {
-				if ((*((*t)->tableau[i]))->priorite < (*((*t)->tableau[2*i+2]))->priorite) comparaison_priorite_fd(t,i);
+				if ((*((*t)->tableau[i])).priorite < (*((*t)->tableau[2*i+2])).priorite) comparaison_priorite_fd(t,i);
 				else break; //Si le fils droit est plus petit que la racine
 			}
 		}
