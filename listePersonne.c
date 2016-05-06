@@ -2,28 +2,6 @@
 #include <stdio.h>
 #include "listePersonne.h"
 
-struct personne_base {
-	int priorite;
-	char* nom;
-	char* prenom;
-	int id1; // identifiant choix 1
-	int id2; // identifiant choix 2
-	char* tabChxOrg1[6];
-	char* tabChxOrg2[6];
-	char* tabChxLib[6];
-	int chxFin; // entier qui indique le choix attribué à la fin à l'individu (0 : chxLib; 1 : chxOrg1 ; 2 : chxOrg2)
-};
-
-struct liste_personne_base {
-	personne val;
-	liste_personne next;
-};
-
-liste_personne creer_liste_personne()
-{
-	return NULL;
-}
-
 /*	@requires : une liste de personne valide
 	@assigns : nothing
 	@ensures : retourne 1 si la liste est vide et 0 sinon */
@@ -51,7 +29,7 @@ void inserer_liste_personne(liste_personne* listPer, personne per)
 
 /*	@requires : personne toRemove non NULL et pointeur sur liste_personne valides
 	@assigns : la liste de personnes *listPer
-	@ensures : si per est présente dans *listPer, retire per de *listPer et retourne 0;
+	@ensures : si per est prÃ©sente dans *listPer, retire per de *listPer et retourne 0;
 			   sinon, retourne -1; */
 int retirer_liste_personne(liste_personne* listPer, personne toRemove)
 {
