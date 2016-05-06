@@ -4,6 +4,11 @@
 #include "listePersonne.h"
 #include "listePlanete.h"
 
+struct tas_base {
+  personne* tableau;
+  int prochain_vide;
+};
+
 typedef struct tas_base* tas;
 
 /*@requires nothing
