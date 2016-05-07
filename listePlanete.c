@@ -12,22 +12,22 @@ liste_planete creer_liste_planete()
 	@ensures : retourne 1 si la liste est vide et 0 sinon */
 int liste_planete_vide(liste_planete listPla)
 {
-	if (listPla == NULL) { return 1; }
-	else /* if (listPla != NULL) */ { return 0; }
+	return listPla == NULL ;
 }
 
 /*	@requires : pointeur sur liste de planete et une planete valides
 	@assigns : la liste de planete
 	@ensures : la planete a ete inseree en tete de liste */
-void inserer_liste_planete(liste_planete* listPla, planete pla)
+
+liste_planete cons(liste_planete d, planete v)
 {
-	if (listPla == NULL) { exit(EXIT_FAILURE); }
+  liste_planete r = (liste_planete) malloc(sizeof(struct liste_planete_base)) ;
+  r->val = v ;
+  r->next = d ;
+  return r ;
+}
 
-	liste_planete newLink = malloc(sizeof(*newLink));
-	if (newLink == NULL) { exit(EXIT_FAILURE); }
-
-	newLink->val = pla;
-	newLink->next = *listPla;
-
-	*listPla = newLink;
+void inserer_liste_planete(liste_planete * d, planete v)
+{
+  *d = cons(*d,v) ;
 }
