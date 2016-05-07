@@ -19,7 +19,7 @@ int liste_planete_vide(liste_planete listPla)
 	@assigns : la liste de planete
 	@ensures : la planete a ete inseree en tete de liste */
 
-liste_planete cons(liste_planete d, planete v)
+liste_planete consPla(liste_planete d, planete v)
 {
   liste_planete r = (liste_planete) malloc(sizeof(struct liste_planete_base)) ;
   r->val = v ;
@@ -29,5 +29,5 @@ liste_planete cons(liste_planete d, planete v)
 
 void inserer_liste_planete(liste_planete * d, planete v)
 {
-  *d = cons(*d,v) ;
+  *d = consPla(*d,v) ;
 }
