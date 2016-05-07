@@ -28,6 +28,10 @@ typedef struct liste_personne_base {
 	struct liste_personne_base * next;
 }  * liste_personne;
 
+
+
+personne creer_personne() ;
+
 /*	@requires : nothing
 	@assigns : nothing
 	@ensures : retourne une liste de personne vide */

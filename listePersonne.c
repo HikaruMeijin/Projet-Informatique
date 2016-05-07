@@ -2,19 +2,17 @@
 #include <stdio.h>
 #include "listePersonne.h"
 
+personne creer_personne()
+{
+	personne p = (personne) malloc(sizeof(struct personne_base)) ;
+	return p ;
+}
 
 liste_personne creer_liste_personne()
 {
   return NULL ;
 }
 
-liste_personne cons(liste_personne d, personne v)
-{
-  liste_personne r = (liste_personne) malloc(sizeof(struct liste_personne_base)) ;
-  r->val = v ;
-  r->next = d ;
-  return r ;
-}
 
 int liste_personne_vide(liste_personne l)
 {
@@ -24,7 +22,10 @@ int liste_personne_vide(liste_personne l)
 
 void inserer_liste_personne(liste_personne * d, personne v)
 {
-  *d = cons(*d,v) ;
+  liste_personne r = (liste_personne) malloc(sizeof(struct liste_personne_base)) ;
+  r->val = v ;
+  r->next = *d ;
+  (*d) = r ;
 }
 
 personne supprimer_liste_personne(liste_personne * d, personne v)
@@ -61,7 +62,7 @@ void affiche(liste_personne d)
 {
 	while(d)
 		{
-			printf("%s %s : %s -> %s -> %s -> %s -> %s -> %s \n %s -> %s -> %s -> %s -> %s -> %s\n %s -> %s -> %s -> %s -> %s -> %s\n", d->val->nom, d->val->prenom, d->val->tabChxOrg1[0],d->val->tabChxOrg1[1],d->val->tabChxOrg1[2],d->val->tabChxOrg1[3],d->val->tabChxOrg1[4],d->val->tabChxOrg1[5],d->val->tabChxOrg2[0],d->val->tabChxOrg2[1],d->val->tabChxOrg2[2],d->val->tabChxOrg2[3],d->val->tabChxOrg2[4],d->val->tabChxOrg2[5],d->val->tabChxLib[0],d->val->tabChxLib[1],d->val->tabChxLib[2],d->val->tabChxLib[3],d->val->tabChxLib[4],d->val->tabChxLib[5]) ;
+			printf(" %s %s (%i) : %i %i : %s -> %s -> %s -> %s -> %s -> %s \n %s -> %s -> %s -> %s -> %s -> %s\n %s -> %s -> %s -> %s -> %s -> %s\n", d->val->nom, d->val->prenom,d->val->priorite,d->val->id1,d->val->id2, d->val->tabChxOrg1[0],d->val->tabChxOrg1[1],d->val->tabChxOrg1[2],d->val->tabChxOrg1[3],d->val->tabChxOrg1[4],d->val->tabChxOrg1[5],d->val->tabChxOrg2[0],d->val->tabChxOrg2[1],d->val->tabChxOrg2[2],d->val->tabChxOrg2[3],d->val->tabChxOrg2[4],d->val->tabChxOrg2[5],d->val->tabChxLib[0],d->val->tabChxLib[1],d->val->tabChxLib[2],d->val->tabChxLib[3],d->val->tabChxLib[4],d->val->tabChxLib[5]) ;
 			d = d->next ;
 		}
 }

@@ -12,7 +12,7 @@
 #include "listePersonne.h"
 #include "tas.h"
 
-#define BUFSIZE 256
+#define BUFSIZE 400
 
 
 void inserecara(char * chaine, char caractere)
@@ -22,34 +22,42 @@ void inserecara(char * chaine, char caractere)
     chaine[i+1] ='\0' ;
 }
 
-tas convertir_t_personne(FILE * f1,FILE * f2)
+tas convertir_t_personne(FILE * f1,FILE * f2) //a modifier si ça marche liste-> tas
 {
     tas tasP = creer_tas() ;
     char tampon1[BUFSIZE] ;
-    char tampon2[BUFSIZE] ;
-    char tmp[30] ; //tampon pour contenir la chaine de caractere de chaque case de la ligne
+    char tmp[300] ; //tampon pour contenir la chaine de caractere de chaque case de la ligne
+    tmp[0] = '\0' ;
+    personne personneTraite = creer_personne()  ; //on cree une variable ou vont etre stockees les infos des personnes
     while(fgets(tampon1,BUFSIZE,f1)) //tant qu'on peut lire une ligne du tableau de souhait
     {
-        fgets(tampon2,BUFSIZE,f2) ; //on lit le fichier de priorité ligne par ligne
-        personne personneTraite ; //on cree une variable ou vont etre stockees les infos des personnes
+	personne personneTraite = creer_personne()  ; //on cree une variable ou vont etre stockees les infos des personnes
+	int nonfinligne = 1 ;
         int i = 0 ; //variable pour le parcours de la ligne
-        while (tampon1[i] != '\0') //tant que la ligne n'est pas finie
+	int j = 1 ; //variable pour savoir quelle information on a traitee
+        int k = 1 ; //variable pour savoir quelle zone est traitee
+        while (nonfinligne) //tant que la ligne n'est pas finie
         {
-            int j=1 ; //variable pour savoir quelle information on a traitee
-            int k = 1 ; //variable pour savoir quelle zone est traitee
-            if(tampon1[i]==',') //on est tombé sur le délimitateur de case
+            if(tampon1[i]==',' || tampon1[i] =='\n') //on est tombé sur le délimitateur de case ou sur la fin de la ligne
             {
                 switch (j)
                 {
                     case 1 :
                     {
-                            sprintf(personneTraite->nom,"%s",tmp) ;
+                            personneTraite->nom = malloc(20*sizeof(char)) ;
+			    sprintf(personneTraite->nom,"%s",tmp) ;
+                       	    j=j+1 ;
+                            tmp[0] = '\0' ;
                             break ;
                     }
                     case 2 :
                     {
-                            sprintf(personneTraite->prenom,"%s",tmp) ;
-                            break ;
+                            personneTraite->prenom = malloc(20*sizeof(char)) ;
+			    sprintf(personneTraite->prenom,"%s",tmp) ;
+		            j=j+1 ;
+                            tmp[0] = '\0' ;
+			    break ;
+                           
                     }
                     case 3 :
                     {
@@ -74,7 +82,10 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                                 fprintf(stderr,"Conversion : Type de croisière non reconnue\n") ;
                                 exit(1) ;
                             }
-                            break ;
+			    j=j+1 ;
+                            tmp[0] = '\0' ;
+			    break ;
+                           
                     }
                     case 4 :
                     {
@@ -99,7 +110,9 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                                 fprintf(stderr,"Conversion : Type de croisière non reconnue\n") ;
                                 exit(1) ;
                             }
-                            break ;
+			    j=j+1 ;
+			    tmp[0] = '\0' ;
+			    break ;
                     }
                     case 5 : //on traite le premier souhait 
                     {
@@ -109,41 +122,48 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                             {
                               case 1 :
                               {
+				  personneTraite->tabChxOrg1[0] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg1[0],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 2 :
                               {
+                                  personneTraite->tabChxOrg1[1] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg1[1],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 3 :
                               {
+                                  personneTraite->tabChxOrg1[2] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg1[2],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 4 :
                               {
+                                  personneTraite->tabChxOrg1[3] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg1[3],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 5 :
                               {
+                                  personneTraite->tabChxOrg1[4] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg1[4],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 6 :
                               {
+                                  personneTraite->tabChxOrg1[5] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg1[5],"%s",tmp) ;
-                                  j=j+2 ;
+                                  j=j+1 ;
                                   k= 1 ;
                                   break ;
                               }
+                             
                             }
                         }
                         else if(personneTraite->id2 == 1)
@@ -152,41 +172,48 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                             {
                               case 1 :
                               {
+                                  personneTraite->tabChxOrg2[0] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg2[0],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 2 :
                               {
+                                  personneTraite->tabChxOrg2[1] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg2[1],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 3 :
                               {
+                                  personneTraite->tabChxOrg2[2] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg2[2],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 4 :
                               {
+                                  personneTraite->tabChxOrg2[3] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg2[3],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 5 :
                               {
+                                  personneTraite->tabChxOrg2[4] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg2[4],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 6 :
                               {
+                                  personneTraite->tabChxOrg2[5] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg2[5],"%s",tmp) ;
-                                  j=j+2 ;
+                                  j=j+1 ;
                                   k= 1 ;
                                   break ;
                               }
+			      
                             }
                         }
                         else
@@ -194,14 +221,16 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                             if (k==6)
                             {
                                 k = 1 ;
-                                j=j+2 ;
+                                j=j+1 ;
                             }
                             else
                             {
                                 k=k+1 ;
                             }
+			    
                         }
-                        j=j-1 ;
+			tmp[0]='\0' ;
+			break ;
                     }
                     case 6 : //on traite le deuxieme souhait
                     {
@@ -211,41 +240,48 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                             {
                               case 1 :
                               {
+                                  personneTraite->tabChxOrg1[0] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg1[0],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 2 :
                               {
+                                  personneTraite->tabChxOrg1[1] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg1[1],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 3 :
                               {
+                                  personneTraite->tabChxOrg1[2] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg1[2],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 4 :
                               {
+                                  personneTraite->tabChxOrg1[3] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg1[3],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 5 :
                               {
+                                  personneTraite->tabChxOrg1[4] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg1[4],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 6 :
                               {
+                                  personneTraite->tabChxOrg1[5] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg1[5],"%s",tmp) ;
-                                  j=j+2 ;
+                                  j=j+1 ;
                                   k= 1 ;
                                   break ;
                               }
+			      
                             }
                         }
                         else if(personneTraite->id2 == 2)
@@ -254,41 +290,48 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                             {
                               case 1 :
                               {
+                                  personneTraite->tabChxOrg2[0] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg2[0],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 2 :
                               {
+                                  personneTraite->tabChxOrg2[1] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg2[1],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 3 :
                               {
+                                  personneTraite->tabChxOrg2[2] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg2[2],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 4 :
                               {
+                                  personneTraite->tabChxOrg2[3] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg2[3],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 5 :
                               {
+                                  personneTraite->tabChxOrg2[4] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg2[4],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 6 :
                               {
+                                  personneTraite->tabChxOrg2[5] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg2[5],"%s",tmp) ;
-                                  j=j+2 ;
+                                  j=j+1 ;
                                   k= 1 ;
                                   break ;
                               }
+			      
                             }
                         }
                         else
@@ -296,14 +339,16 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                             if (k==6)
                             {
                                 k = 1 ;
-                                j=j+2 ;
+                                j=j+1 ;
                             }
                             else
                             {
                                 k=k+1 ;
                             }
+			    
                         }
-                        j=j-1 ;
+			tmp[0]='\0' ;
+			break ;
                     }
                     case 7 : //on traite le troisieme souhait
                     {
@@ -313,41 +358,48 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                             {
                               case 1 :
                               {
+                                  personneTraite->tabChxOrg1[0] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg1[0],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 2 :
                               {
+                                  personneTraite->tabChxOrg1[1] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg1[1],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 3 :
                               {
+                                  personneTraite->tabChxOrg1[2] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg1[2],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 4 :
                               {
+                                  personneTraite->tabChxOrg1[3] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg1[3],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 5 :
                               {
+                                  personneTraite->tabChxOrg1[4] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg1[4],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 6 :
                               {
+                                  personneTraite->tabChxOrg1[5] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg1[5],"%s",tmp) ;
-                                  j=j+2 ;
+                                  j=j+1 ;
                                   k= 1 ;
                                   break ;
                               }
+			      
                             }
                         }
                         else if(personneTraite->id2 == 3)
@@ -356,38 +408,44 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                             {
                               case 1 :
                               {
+                                  personneTraite->tabChxOrg2[0] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg2[0],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 2 :
                               {
+                                  personneTraite->tabChxOrg2[1] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg2[1],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 3 :
                               {
+                                  personneTraite->tabChxOrg2[2] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg2[2],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 4 :
                               {
+                                  personneTraite->tabChxOrg2[3] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg2[3],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 5 :
                               {
+                                  personneTraite->tabChxOrg2[4] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg2[4],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 6 :
                               {
+                                  personneTraite->tabChxOrg2[5] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg2[5],"%s",tmp) ;
-                                  j=j+2 ;
+                                  j=j+1 ;
                                   k= 1 ;
                                   break ;
                               }
@@ -398,14 +456,15 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                             if (k==6)
                             {
                                 k = 1 ;
-                                j=j+2 ;
+                                j=j+1 ;
                             }
                             else
                             {
                                 k=k+1 ;
                             }
                         }
-                        j=j-1 ;
+                        tmp[0]='\0' ;
+			break ;
                     }
                     case 8 :
                     {
@@ -413,58 +472,69 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                             {
                               case 1 :
                               {
+                                  personneTraite->tabChxLib[0] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxLib[0],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 2 :
                               {
+                                  personneTraite->tabChxLib[1] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxLib[1],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 3 :
                               {
+                                  personneTraite->tabChxLib[2] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxLib[2],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 4 :
                               {
+                                  personneTraite->tabChxLib[3] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxLib[3],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 5 :
                               {
+                                  personneTraite->tabChxLib[4] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxLib[4],"%s",tmp) ;
                                   k=k+1 ;
                                   break ;
                               }
                               case 6 :
                               {
+                                  personneTraite->tabChxLib[5] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxLib[5],"%s",tmp) ;
-                                  j=j+2 ;
+                                  j=j+1 ;
                                   k= 1  ;
+				  nonfinligne = 0 ;
                                   break ;
                               }
                             }
+			tmp[0]='\0' ;
+			break ;
                     }
                 }
-                j=j+1 ;
-                tmp[0] = '\0' ;
             }
             else
             {
                 inserecara(tmp,tampon1[i]) ;
             }
+	    i=i+1 ;
         }
         i=0 ;
+	tampon1[0] = '\0' ;
+	fgets(tampon1,BUFSIZE,f2) ; //on lit le fichier de priorité ligne par ligne
         tmp[0] = '\0' ;
-        while (tampon2[i] !='\0') //tant que la ligne n'est pas finie
+	j = 1 ;
+	nonfinligne = 1 ;
+        while (nonfinligne) //tant que la ligne n'est pas finie
             {
-                int j = 1 ;
-                if(tampon2[i] == ',') //on est tombé sur le délimitateur de case
+                if(tampon1[i] == ',' || tampon1[i] == '\n') //on est tombé sur le délimitateur de case
                 {
                     if(j==3)
                     {
@@ -473,21 +543,22 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                         {
                             personneTraite->priorite = personneTraite->priorite + 1000 ;
                         }
+			nonfinligne = 0 ;
                     }
                     j=j+1 ;
                     tmp[0] = '\0' ;
                 }
                 else
                 {
-                    inserecara(tmp,tampon2[i]) ;
+                    inserecara(tmp,tampon1[i]) ;
                 }
                 i=i+1 ;
 
-            }
-        inserer(personneTraite,&tasP) ;
+            } 
+	inserer_tas(&tasP,personneTraite) ; 
+	tampon1[0] = '\0' ;
     }
-    return tasP ;
-
+    return tasP ; 
 }
 
 void insererplanete(liste_planete * Tabplanete,planete planeteTraitee, int j)
@@ -538,6 +609,7 @@ liste_planete * convertir_t_planete ( FILE * f )
 
 
     }
+    return Tabplanete ;
 }
 
 int nombreligne(FILE * f)
