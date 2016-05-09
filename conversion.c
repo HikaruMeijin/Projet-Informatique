@@ -583,7 +583,6 @@ liste_planete * convertir_t_planete ( FILE * f )
         {
             if(tampon1[i] == ',')
             {
-		printf("%i\n",j) ;
 		i=i+1 ;
                 while(tampon1[i] != '\n' && tampon1[i] != ',')
                 {
