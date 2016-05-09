@@ -22,7 +22,7 @@ tas convertir_t_personne ( FILE * , FILE * ) ;
 /*  @requires : fd un flux sur le fichier des zones
     @assigns : nothing
     @ensures : retourne le tableau de listes de planete */
-liste_planete * convertir_t_planete ( FILE * ) ;
+liste_planete * convertir_t_planete( FILE * ) ;
 
 /*  @requires : fd un flux sur le fichier des contraintes
     @assigns : nothing

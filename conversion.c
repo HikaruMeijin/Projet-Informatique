@@ -28,7 +28,6 @@ tas convertir_t_personne(FILE * f1,FILE * f2) //a modifier si ça marche liste-> 
     char tampon1[BUFSIZE] ;
     char tmp[300] ; //tampon pour contenir la chaine de caractere de chaque case de la ligne
     tmp[0] = '\0' ;
-    personne personneTraite = creer_personne()  ; //on cree une variable ou vont etre stockees les infos des personnes
     while(fgets(tampon1,BUFSIZE,f1)) //tant qu'on peut lire une ligne du tableau de souhait
     {
 	personne personneTraite = creer_personne()  ; //on cree une variable ou vont etre stockees les infos des personnes
@@ -561,44 +560,52 @@ tas convertir_t_personne(FILE * f1,FILE * f2) //a modifier si ça marche liste-> 
     return tasP ; 
 }
 
-void insererplanete(liste_planete * Tabplanete,planete planeteTraitee, int j)
-{
-    inserer_liste_planete(&Tabplanete[j] , planeteTraitee) ;
-}
 
 liste_planete * convertir_t_planete ( FILE * f )
 {
-    liste_planete * Tabplanete = malloc(7*sizeof(liste_planete)) ;
+
+    liste_planete * Tabplanete = malloc(6*sizeof(liste_planete)) ;
+    int k=0 ;
+    for(k=0;k<6;k=k+1)
+    {
+	Tabplanete[k] = creer_liste_planete() ;
+    }
     char tampon1[BUFSIZE] ;
-    char tmp[30] ; //variable pour contenir le nom de la planete
+    char tmp[30]; //variable pour contenir le nom de la planete
     char tmp2[30] ; //variable pour contenir le nombre de place dispo
+    tmp[0]='\0' ; tmp2[0]='\0' ;
     while(fgets(tampon1,BUFSIZE,f)) //tant qu'on peut lire une ligne du tableau de plenete
     {
-        planete planeteTraitee ; //tampon planete
+	int nonFinligne = 1 ;
         int i = 0 ; //variable pour le parcours de la ligne
-        while (tampon1[i] != '\0') //tant que la ligne n'est pas finie
+	int j = 0 ; //variable pour le parcour de chaque zone
+        while (nonFinligne) //tant que la ligne n'est pas finie
         {
-            int j = 0 ;
             if(tampon1[i] == ',')
             {
-                while(tampon1[i] != ',' && tampon1[i] != '\0')
+		printf("%i\n",j) ;
+		i=i+1 ;
+                while(tampon1[i] != '\n' && tampon1[i] != ',')
                 {
                     inserecara(tmp2,tampon1[i]) ;
                     i=i+1 ;
                 }
                 if (tmp[0] != '\0') //il existe des cas ou dans le tableau pour des planete d'une meme zone, il n'y a que des virgules avant ou apres
                 {
+		    planete planeteTraitee = creer_planete() ; //tampon planete
+		    planeteTraitee->nom = malloc(20*sizeof(char)) ;
                     sprintf(planeteTraitee->nom,"%s",tmp) ;
                     planeteTraitee->nbPlaces = atoi(tmp2) ;
-                    insererplanete(Tabplanete,planeteTraitee,j) ;
+                    inserer_liste_planete(&Tabplanete[j] , planeteTraitee) ;
+		    if(tampon1[i] == '\n')
+		    {
+			nonFinligne = 0 ;
+		    }
                 }
-                j=j+1 ;
-                tmp[0] = '\0' ;
-                tmp2[0] ='\0' ;
-                if(tampon1[i] == '\0') //cas où on est arrivé a la fin de la ligne dans l'affectation de planete
-                {
-                    i=i-1 ;
-                }
+	    j=j+1 ;
+            tmp[0] = '\0' ;
+            tmp2[0] ='\0' ;
+      
             }
             else
             {
@@ -606,6 +613,7 @@ liste_planete * convertir_t_planete ( FILE * f )
             }
             i=i+1 ;
         }
+	
 
 
     }
