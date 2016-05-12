@@ -623,39 +623,54 @@ int nombreligne(FILE * f)
 {
     int i=0 ;
     char tampon[BUFSIZE] ;
-    while( fgets(tampon,BUFSIZE,f) ) //tant qu'on peut lire une ligne du tableau
+    tampon[0]='\0' ;
+    while(fgets(tampon,BUFSIZE,f)) //tant qu'on peut lire une ligne du tableau
+    {
 	i=i+1 ;
+	tampon[0]='\0' ;
+    }
+    fseek(f,0,SEEK_SET) ; //on se remet au début du fichier
     return i ;
 }
 
-char*** convertir_contrainte (FILE * f)
+char*** convertir_contrainte(FILE * f,int sizetab)
 {
-    char*** TabContrainte = malloc( 2*sizeof(char**)) ;
+    char*** TabContrainte = malloc(2*sizeof(char**)) ; ;
     char tampon1[BUFSIZE] ;
     char tmp[30] ; //variable pour contenir le nom de la premiere planete
     char tmp2[30] ; //variable pour contenir le nom de la 2eme
-    int i = nombreligne(f) ;
     int j = 0 ;
-    for(j=0 ; j<1 ; j=j+1)
+    tmp[0]='\0' ;
+    tmp2[0]='\0' ;
+    tampon1[0]='\0' ;
+    for(j=0 ; j<2 ; j=j+1)
     {
-        TabContrainte[j] = malloc(i*sizeof(char*)) ;
+        TabContrainte[j] = malloc(sizetab*sizeof(char*)) ;
+	int k = 0 ;
+	for(k=0;k<sizetab;k=k+1)
+	{
+		TabContrainte[j][k] = malloc(30*sizeof(char)) ;
+	}
     }
-    j = 0 ; //la j-eme ligne de contrainte
+    j=0 ; //la j-eme ligne de contrainte
     while(fgets(tampon1,BUFSIZE,f)) //tant qu'on peut lire une ligne du tableau de contrainte
     {
-       i = 0 ; //variable pour le parcours de la ligne
-       while (tampon1[i] != '\0') //tant que la ligne n'est pas finie
+       int nonFinligne = 1 ;
+       int i = 0 ; //variable pour le parcours de la ligne
+       while (nonFinligne) //tant que la ligne n'est pas finie
        {
            if(tampon1[i] == ',')
            {
-               while(tampon1[i] != '\0')
+	       i=i+1 ;
+               while(tampon1[i] != '\n')
                {
                    inserecara(tmp2,tampon1[i]) ;
                    i=i+1 ;
                }
                sprintf(TabContrainte[0][j],"%s",tmp) ; //la premiere contrainte
                sprintf(TabContrainte[1][j],"%s",tmp2) ; //la seconde contrainte
-               i=i-1 ;
+               nonFinligne = 0 ;
+	       
            }
            else
            {
@@ -663,6 +678,9 @@ char*** convertir_contrainte (FILE * f)
            }
            i=i+1 ;
        }
+       tmp[0]='\0' ;
+       tmp2[0]='\0' ;
+       tampon1[0]='\0' ;
        j=j+1 ;
     }
     return TabContrainte ;

@@ -16,7 +16,7 @@
 
 /*  @requires : f1 et f2 deux flux sur les fichiers des personnes (f1 = flux sur le tableau de priorite et f2 = flux sur le tableau desouhait)
     @assigns : nothing
-    @ensures : retourne un tableau de personne avec les priorites et souhaits */
+    @ensures : retourne le tas où sont rangés toutes les personnes*/
 tas convertir_t_personne ( FILE * , FILE * ) ; 
 
 /*  @requires : fd un flux sur le fichier des zones
@@ -24,14 +24,20 @@ tas convertir_t_personne ( FILE * , FILE * ) ;
     @ensures : retourne le tableau de listes de planete */
 liste_planete * convertir_t_planete( FILE * ) ;
 
-/*  @requires : fd un flux sur le fichier des contraintes
+/*  @requires : f un flux sur le fichier des contraintes, sizetab le nombre de ligne du fichier
     @assigns : nothing
     @ensures : retourne le tableau des contraintes */
-planete * convertir_contrainte (FILE * f) ;
+char*** convertir_contrainte(FILE * f, int sizetab) ;
 
  /* @requires : une personne et un flux sur un fichier
-    @assigns : rajoute une ligne à file FILE
+    @assigns : rajoute une ligne au fichier
     @ensures : la ligne a été ajoutée */
 void ajout_ligne ( personne , FILE * ) ;
+
+/* @requires : un flux de fichier
+   @assigns : nothing
+   @ensures : retourne le nombre de ligne du fichier
+*/
+int nombreligne(FILE * f) ;
 
 #endif // CONVERSION_H_INCLUDED
