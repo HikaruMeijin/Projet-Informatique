@@ -8,10 +8,10 @@
 	@ensures : retourne une personne */
 personne creer_personne()
 {
-	personne per = (personne) malloc(sizeof(struct personne_base)); /* on alloue dynamiquement de la mémoire pour la personne 'per' que l'on crée */
-	if (per == NULL) { exit(EXIT_FAILURE); } /* si notre allocation mémoire a échoué, on arrête l'exécution du programme */
+	personne per = (personne) malloc(sizeof(struct personne_base)); /* on alloue dynamiquement la mÃ©moire nÃ©cessaire pour la personne 'per' que l'on crÃ©e */
+	if (per == NULL) { exit(EXIT_FAILURE); } /* si notre allocation mÃ©moire a Ã©chouÃ©, on arrÃªte l'exÃ©cution du programme */
 
-	return per; /* l'allocation a réussi, on retourne per */
+	return per; /* l'allocation a rÃ©ussi, on retourne per */
 }
 
 /*	@requires : nothing
@@ -30,39 +30,39 @@ int liste_personne_vide(liste_personne listPer)
 	return listPer == NULL;
 }
 
-/*	@requires : pointeur sur liste de personne valide et une personne valide, non présente dans la liste
+/*	@requires : pointeur sur liste de personne valide et une personne valide, non prÃ©sente dans la liste
 	@assigns : la liste de personne
 	@ensures : la personne a ete inseree en tete de liste */
 void inserer_liste_personne(liste_personne* listPer, personne per)
 {
 	if (listPer == NULL) { exit(EXIT_FAILURE); }
 
-	liste_personne newLink = (liste_personne) malloc(sizeof(struct liste_personne_base)); /* allocation dynamique pour le nouveau maillon que l'on va insérer dans *listPer */
-	if (newLink == NULL) { exit(EXIT_FAILURE); } /* si notre allocation mémoire a échoué, on arrête l'exécution du programme */
+	liste_personne newLink = (liste_personne) malloc(sizeof(struct liste_personne_base)); /* allocation dynamique pour le nouveau maillon que l'on va insÃ©rer dans *listPer */
+	if (newLink == NULL) { exit(EXIT_FAILURE); } /* si notre allocation mÃ©moire a Ã©chouÃ©, on arrÃªte l'exÃ©cution du programme */
 
 	newLink->val = per; /* le nouveau maillon prend la valeur per */
 	newLink->next = *listPer;
 
-	*listPer = newLink; /* newLink devient la nouvelle tête de notre liste */
+	*listPer = newLink; /* newLink devient la nouvelle tÃªte de notre liste */
 }
 
 /*	@requires : personne toRemove non NULL et pointeur sur liste_personne valides
 	@assigns : la liste de personnes *listPer
-	@ensures : si per est présente dans *listPer, retire per de *listPer et retourne 0;
+	@ensures : si per est prÃ©sente dans *listPer, retire per de *listPer et retourne 0;
 			   sinon, retourne -1; */
 int retirer_liste_personne(liste_personne* listPer, personne toRemove)
 {
-	if (listPer == NULL) { exit(EXIT_FAILURE); } /* listPer == NULL ==> listPer invalide, donc on arrête l'éxécution du programme */
+	if (listPer == NULL) { exit(EXIT_FAILURE); } /* listPer == NULL ==> listPer invalide, donc on arrÃªte l'Ã©xÃ©cution du programme */
 
-	if (liste_personne_vide(*listPer)) { return -1; } /* si *listPer est vide, alors on retourne évidemment -1 */
+	if (liste_personne_vide(*listPer)) { return -1; } /* si *listPer est vide, alors on retourne Ã©videmment -1 */
 
 	liste_personne prevLink = *listPer;
 	liste_personne curLink = prevLink->next;
 	
-	if (prevLink->val == toRemove) /* si la personne qu'on veut retirer (toRemove) est en tête de *listPer */
+	if (prevLink->val == toRemove) /* si la personne qu'on veut retirer (toRemove) est en tÃªte de *listPer */
 	{
-		*listPer = curLink; /* on réaffecte *listPer au maillon suivant */
-		free(prevLink); /* puis on libère l'espace qu'occupait l'ancienne tête de *listPer */
+		*listPer = curLink; /* on rÃ©affecte *listPer au maillon suivant */
+		free(prevLink); /* puis on libÃ¨re l'espace qu'occupait l'ancienne tÃªte de *listPer */
 		return 0;
 	}
 
@@ -70,8 +70,8 @@ int retirer_liste_personne(liste_personne* listPer, personne toRemove)
 	{
 		if (curLink->val == toRemove) /* si la valeur du maillon courant curLink est toRemove */
 		{
-			prevLink->next = curLink->next; /* le maillon suivant du maillon précédent devient le maillon suivant du maillon courant */
-			free(curLink); /* on libère l'espace qu'occupait le maillon courant (celui de valeur toRemove) */
+			prevLink->next = curLink->next; /* le maillon suivant du maillon prÃ©cÃ©dent devient le maillon suivant du maillon courant */
+			free(curLink); /* on libÃ¨re l'espace qu'occupait le maillon courant (celui de valeur toRemove) */
 			return 0;
 		}
 
@@ -80,9 +80,9 @@ int retirer_liste_personne(liste_personne* listPer, personne toRemove)
 		curLink = prevLink->next; /* curLink aussi. */
 	}
 	/* soit on trouve toRemove dans *ListPer et l'on retourne 0,
-	   soit on continue d'avancer jusqu'à arriver en fin de *listPer et obtenir curLink == NULL,
+	   soit on continue d'avancer jusqu'Ã  arriver en fin de *listPer et obtenir curLink == NULL,
 	   donc, terminaison de la boucle while, OK */
 
-	/* si curLink vaut NULL, fin de la boucle : toRemove n'était pas présent dans *listPer */
+	/* si curLink vaut NULL, fin de la boucle : toRemove n'Ã©tait pas prÃ©sent dans *listPer */
 	return -1; /* on retourne donc -1 */
 }
