@@ -19,7 +19,7 @@ tas creer_tas();
   @ensures retourne 1 si tas vide, O sinon */
 int tas_vide(tas);
 
-/*@requires pointeur sur tas et persone valide
+/*@requires pointeur sur tas valide et persone valide, non présente dans le tas
   @ensigns tas
   @ensures personne insérée à la bonne place dans le tas*/
 void inserer_tas(tas*, personne);
@@ -28,6 +28,11 @@ void inserer_tas(tas*, personne);
   @ensigns tas
   ensures retirer personne en conservant nature de tas */
 personne retirer_tas(tas*);
+
+/*@requires pointeur sur tas valide et indice valide
+  @ensigns nothing
+  ensures renvoi de la priorité de la personne concernée */
+int personne_priorite(tas* , int );
 
 /*@requires pointeur sur tas valide
   @ensigns nothing
