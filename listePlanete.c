@@ -44,3 +44,14 @@ void inserer_liste_planete(liste_planete* listPla, planete pla)
 
 	*listPla = newLink; /* newLink devient la nouvelle tête de notre liste */
 }
+
+void affichePla(liste_planete listPla)
+{
+	liste_planete curLink = listPla;
+	while (curLink != NULL)
+	{
+		printf("[%s : %d places] -> ", curLink->val->nom, curLink->val->nbPlaces);
+		curLink = curLink->next;
+	}
+	printf("NULL");
+}
