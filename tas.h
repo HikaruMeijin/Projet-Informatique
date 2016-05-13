@@ -36,22 +36,22 @@ int personne_priorite(tas* , int );
 
 /*@requires pointeur sur tas valide
   @ensigns nothing
-  ensures compare la racine au fils droit et agit en consequence */
-void comparaison_priorite_fd(tas*, int);
+  ensures échange la racine avec le fils droit */
+void echanger_racine_fd(tas*, int);
 
 /*@requires pointeur sur tas valide
   @ensigns nothing
-  ensures compare la racine au fils gauche et agit en consequence */
-void comparaison_priorite_fg(tas*, int);
+  ensures échange la racine avec le fils gauche */
+void echanger_racine_fg(tas*, int);
 
 /*@requires pointeur sur tas valide
   @ensigns tas
-  ensures rééquilibrer tas et conserver structure */
+  ensures rééquilibrer le tas et conserver sa structure */
 void reorganiser_tas(tas*);
 
 /*@requires pointeur sur tas valide
   @ensigns tas
-  ensures libérer la zone mémoire qssociée au tas */
+  ensures libérer la zone mémoire associée au tas */
 void liberer_tas(tas*);
 
 #endif // TAS_H
