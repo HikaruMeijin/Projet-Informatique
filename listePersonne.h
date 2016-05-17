@@ -10,6 +10,7 @@ typedef struct personne_base {
 	char* tabChxOrg1[6]; /* tableau correspondant au 1er choix de voyage pre-orgarnise de la personne */
 	char* tabChxOrg2[6]; /* tableau correspondant à son 2nd voeu de voyage de type pre-organise */
 	char* tabChxLib[6]; /* tableau contenant les choix de la personne dans le cas d'un parcours libre */
+	int assigned[6];  /* tableau qui indique les zones assignées de manière définitive au voyageur */
 	int chxFin; /* entier qui indique le choix attribué à la fin à l'individu (1 : chxOrg1 ; 2 : chxOrg2 ; 3 : chxLib) */
 } * personne;
 
