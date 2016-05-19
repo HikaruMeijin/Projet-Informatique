@@ -198,132 +198,70 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
   }
   int nbLigne=nombreligne(fcontrainte);
   char*** tContrainte = convertir_contrainte(fcontrainte,nbLigne);
-	
-  personne previous;
+
   personne current;
-  personne currentInList;
-  liste_personne memePriorite = creer_liste_personne();
-  liste_personne tmp = creer_liste_personne();
-  int lastOne=0;
-  int termination=0;
-  int ListeTraite=1;
-  while(tas_vide(tPersonne)==0 || lastOne==1){
-    if(tas_vide(tPersonne)==0 && ListeTraite==1){
-      current=retirer_tas(&tPersonne);/*on prend la personne avec la plus grand priorité*/
+  while(tas_vide(tPersonne)==0){
+    current=retirer_tas(&tPersonne);/*on prend la personne avec la plus grand priorité*/
+    if(placeCroisiere[current->id1 - 1]>0){/*Si il reste de la place dans la croisière choisie en 1er Choix*/
+      placeCroisiere[current->id1-1]--;
+      placeCroisiere[3]--;
+      if(current->id1==4){
+        current->chxFin=3;
+      }
+      else{
+        current->chxFin=1;/*On indique que le premier choix est son choix*/
+      }
+      inserer_tas(&tasCroisiere[current->id1 - 1],current);/*ajout dans le tas de la croisière en question*/
     }
-    if((liste_personne_vide(memePriorite)==1 || previous->priorite==current->priorite) && lastOne==0){
-      ListeTraite=1;
-      inserer_liste_personne(&memePriorite,current);/*On stock la personne dans la liste si elle a la même priorité que les précédente personnes*/
-    } 
+    else if(placeCroisiere[current->id2 - 1]>0){/*Si il reste de la place dans son choix deux*/
+      placeCroisiere[current->id2-1]--;
+      placeCroisiere[3]--;
+      if(current->id2 == 4){
+        current->chxFin=3;
+      }
+      else{
+        current->chxFin=2;/*on indique que le deuxième choix est son choix*/
+      }
+      inserer_tas(&tasCroisiere[current->id2 - 1],current);/*ajout dans le tas de la croisière*/
+    }
     else{
-      ListeTraite=0;
-      if(lastOne==1){termination=1;}
-      lastOne=0;
-      tmp=memePriorite;
-      while(liste_personne_vide(tmp) != 1){/*on parcours les voyageurs de même priorité*/
-	currentInList=tmp->val;
-	if(placeCroisiere[currentInList->id1 - 1]>0){/*Si il reste de la place dans la croisière choisie en 1er Choix*/
-	  if(currentInList->id1==4){
-	    currentInList->chxFin=3;
-	  }
-	  else{
-	    currentInList->chxFin=1;/*On indique que le premier choix est son choix*/
-	  }
-	  inserer_tas(&tasCroisiere[currentInList->id1 - 1],current);/*ajout dans le tas de la croisière en question*/
-	  retirer_liste_personne(&memePriorite,currentInList);/*On retire la personne de la liste des voyageurs de même prio*/
-	}
-	tmp=tmp->next;
-      }
-      tmp=memePriorite;
-      while(liste_personne_vide(tmp) != 1){/*On reparcours la liste pour les gens n'ayant pas eu leurs 1er Choix*/
-	currentInList=tmp->val;
-	if(placeCroisiere[currentInList->id2 - 1]>0){/*Si il reste de la place dans son choix deux*/
-	  if(currentInList->id2 == 4){
-	    currentInList->chxFin=3;
-	  }
-	  else{
-	    currentInList->chxFin=2;/*on indique que le deuxième choix est son choix*/
-	  }
-	  inserer_tas(&tasCroisiere[currentInList->id2 - 1],current);/*ajout dans le tas de la croisière*/
-	  retirer_liste_personne(&memePriorite,currentInList);/*On retire la personne de la liste des voyageurs de même prio*/
-	}
-	else{
-	  currentInList->chxFin=3;/*on indique que c'est ni son 1er ni son 2eme choix*/
-	  inserer_tas(&tasCroisiere[3],currentInList);/*Sinon on assigne au choix libre*/
-	  retirer_liste_personne(&memePriorite,currentInList);/*on retire la personne de la liste*/
-	}
-      }
+      placeCroisiere[3]--;
+      current->chxFin=3;/*on indique que c'est ni son 1er ni son 2eme choix*/
+      inserer_tas(&tasCroisiere[3],current);/*Sinon on assigne au choix libre*/
     }
-    if(tas_vide(tPersonne)==1 && termination==0){lastOne=1;}
-    previous=current;
   }
   printf("fin boucle\n");
   /*--TRAITEMENT DES PLANETES DANS CROISIERE--*/
   char* imposition;
   planete Pimposition;
-  ListeTraite=1;
-  lastOne=0;
-  termination=0;
-  int compte=0;
-  int compte2=0;
-  int compte3=0;
-  int compte4=0;
   for(i=0;i<3;i=i+1){/*Pour chaque croisière organisée*/
     printf("Croisière %d\n",i);
     for(j=0;j<6;j=j+1){/*Pour chaque zone*/
       printf("  Zone %d\n",j);
       tas tasTampon=creer_tas();
       liste_personne tamponPersonne = creer_liste_personne();
-      while(tas_vide(tasCroisiere[i])==0 || lastOne==1){/*tant qu'il y a des voyageur dans le tas*/
-	printf("      while 1 : %d\n",compte++);
-	if(tas_vide(tasCroisiere[i])==0 && ListeTraite==1){
-	  current=retirer_tas(&tasCroisiere[i]);/*on prend la personne a plus forte priorité*/
-	}
-	if((liste_personne_vide(memePriorite)==1 || previous->priorite==current->priorite) && lastOne==0){
-	  ListeTraite=1;
-	  printf("         if 1 : %d\n",compte2++);
-	  inserer_liste_personne(&memePriorite,current);/*On crée une liste des personne ayant la même priorité*/
-	} 
-	else{
-	  printf("            else 1 : %d\n",compte3++);
-	  ListeTraite=0;
-	  if(lastOne==1){termination=1;}
-	  lastOne=0;
-	  tmp=memePriorite;
-	  while(liste_personne_vide(tmp) == 0){/*tant que la liste des personne de même priorité est non vide*/
-	    printf("               while 2 : %d\n",compte4++);
-	    current=tmp->val;/*parcours de la liste*/
-	    printf("allo3\n");
-	    if(i==current->id1-1){/*Si il s'agit de son premier choix*/
-	      printf("allo1\n");
-	      if(choixPlanetePossible(Croisiere[i],j,current->tabChxOrg1[j])==0){/*si son choix de zone j est pas possible*/
-		inserer_liste_personne(&tamponPersonne,current);/*on insere dans le tampon (voir apres)*/
-	      }
-	      else{
-		supprimerPlace(Croisiere[3],j,current->tabChxOrg1[j]); /*Si c'est possible on retire une place a la planete concerné. On a rien a faire pour enregistrer son choix : il est déja enregistrer dans ces choix, on garde donc ça intact*/
-		inserer_tas(&tasTampon,current);
-	      }
-	    }
-	    else{/*Si c'est son deuxième choix*/
-	      printf("alloooo\n");
-	      printf("%d\n",current->id2);
-	      if(choixPlanetePossible(Croisiere[i],j,current->tabChxOrg2[j])==0){/*si c'est pas possible*/
-		inserer_liste_personne(&tamponPersonne,current);/*tampon*/
-		printf("hey\n");
-	      }
-	      else{
-		printf("coucou\n");
-		supprimerPlace(Croisiere[3],j,current->tabChxOrg1[j]);/*on supprime la place*/
-		inserer_tas(&tasTampon,current);
-	      }
-	    }
-	    retirer_liste_personne(&memePriorite,current);
-	    tmp=tmp->next;
+      while(tas_vide(tasCroisiere[i])==0){/*tant qu'il y a des voyageur dans le tas*/
+	current=retirer_tas(&tasCroisiere[i]);/*on prend la personne a plus forte priorité*/
+        if(i==current->id1-1){/*Si il s'agit de son premier choix*/
+	  if(choixPlanetePossible(Croisiere[i],j,current->tabChxOrg1[j])==0){/*si son choix de zone j est pas possible*/
+	    inserer_liste_personne(&tamponPersonne,current);/*on insere dans le tampon (voir apres)*/
+	  }
+	  else{
+	    supprimerPlace(Croisiere[3],j,current->tabChxOrg1[j]); /*Si c'est possible on retire une place a la planete concerné. On a rien a faire pour enregistrer son choix : il est déja enregistrer dans ces choix, on garde donc ça intact*/
+	    inserer_tas(&tasTampon,current);
 	  }
 	}
-	if(tas_vide(tasCroisiere[i])==1 && termination==0){lastOne=1;}
-	previous=current;
+	else{/*Si c'est son deuxième choix*/
+	  if(choixPlanetePossible(Croisiere[i],j,current->tabChxOrg2[j])==0){/*si c'est pas possible*/
+	    inserer_liste_personne(&tamponPersonne,current);/*tampon*/
+	  }
+	  else{
+	    supprimerPlace(Croisiere[3],j,current->tabChxOrg1[j]);/*on supprime la place*/
+	    inserer_tas(&tasTampon,current);
+	  }
+	}
       }
+      printf("fin premiere boucle\n");
       while(liste_personne_vide(tamponPersonne)==0){/*on parcours les personnes dont le choix est impossible*/
 	current=tamponPersonne->val;
 	imposition = premiereDestPossible(Croisiere[i],j);/*on stock dans imposition la première planete ou il y a de la place*/
@@ -331,11 +269,12 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
 	current->tabChxOrg1[j]=imposition;/*on change leurs choix qui sont maintenant leurs choix finaux*/
 	current->tabChxOrg2[j]=imposition;
 	inserer_tas(&tasTampon,current);
+	tamponPersonne=tamponPersonne->next;
       }
       tasCroisiere[i]=tasTampon;
     }
     while(tas_vide(tasCroisiere[i])==0){
-      ajout_ligne(retirer_tas(&tasCroisiere[i]),fFinal);
+	ajout_ligne(retirer_tas(&tasCroisiere[i]),fFinal);
     }
   }
 
