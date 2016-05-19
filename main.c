@@ -74,20 +74,27 @@ int dansLesChoix(char* choix[],char* nomPlanete){
   @assign rien
   @ensure renvoi 1 si les contrainte sont respecter 0 sinon*/
 int respectContrainte(char* choix[],char*** contrainte,int size){
+  printf(" entrée respectContrainte\n nbLigne : %d\n",size);
   int respect=1;
   int i;
   int j;
+  int k;
   for(i=0;i<size;i=i+1){
+    printf("ligne %d des contrainte\n",i);
     for(j=0;j<6;j=j+1){
+      printf("choix n_%d\n",j);
       if(strcmp(choix[j],contrainte[0][i])==0){
+	printf("le choix j correspond à un impliquant\n");
 	respect=0;
-	for(j=0;j<6;j=j+1){
-	  if(strcmp(choix[j],contrainte[1][i])==0){
+	for(k=0;k<6;k=k+1){
+	  printf("choix n_%d\n",k);
+	  if(strcmp(choix[k],contrainte[1][i])==0){
+	    printf("l'implique a été trouvé, c'est bon\n");
 	    respect=1;
 	    break;
 	  }
 	}
-	if(respect==0){return 0;}
+	if(respect==0){printf("l'implique na pas été trouvé\n");return 0;}
       }
     }
   }
@@ -122,7 +129,6 @@ int nbPlaceCroisiere(liste_planete* croisiere){
   @ensure renvoi 0 si plus de place dans la planete choix de la zone zone. 1 sinon, et reduit le nombre de place de la planete choix
   @assign change le nombre de place eventuellement*/
 int choixPlanetePossible(liste_planete* choixCroisiere,int zone,char* choix){
-  printf("oh je suis la\n");
   liste_planete tmp=choixCroisiere[zone];
   while(liste_planete_vide(tmp)==0){/*on parcours les planete de la zone*/
     if(strcmp(choix,(tmp->val)->nom)==0){/*On recherche la planete correspondant au choix*/
@@ -172,7 +178,7 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
     exit(1);
   }
   int i,j;
-  FILE* fFinal=fopen("~/Bureau/affectation.csv","w");
+  FILE* fFinal=fopen("~/Bureau/affectation.csv","a");
   FILE* fplanete=fopen(argv[1],"r");
   FILE* fcroisiere1=fopen(argv[2],"r");
   FILE* fcroisiere2=fopen(argv[3],"r");
@@ -204,8 +210,8 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
     current=retirer_tas(&tPersonne);/*on prend la personne avec la plus grand priorité*/
     if(placeCroisiere[current->id1 - 1]>0){/*Si il reste de la place dans la croisière choisie en 1er Choix*/
       placeCroisiere[current->id1-1]--;
-      placeCroisiere[3]--;
       if(current->id1==4){
+	placeCroisiere[3]--;
         current->chxFin=3;
       }
       else{
@@ -215,8 +221,8 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
     }
     else if(placeCroisiere[current->id2 - 1]>0){/*Si il reste de la place dans son choix deux*/
       placeCroisiere[current->id2-1]--;
-      placeCroisiere[3]--;
       if(current->id2 == 4){
+	placeCroisiere[3]--;
         current->chxFin=3;
       }
       else{
@@ -234,13 +240,16 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
   /*--TRAITEMENT DES PLANETES DANS CROISIERE--*/
   char* imposition;
   planete Pimposition;
+  int compte=0;
   for(i=0;i<3;i=i+1){/*Pour chaque croisière organisée*/
     printf("Croisière %d\n",i);
     for(j=0;j<6;j=j+1){/*Pour chaque zone*/
       printf("  Zone %d\n",j);
+      compte=0;
       tas tasTampon=creer_tas();
       liste_personne tamponPersonne = creer_liste_personne();
       while(tas_vide(tasCroisiere[i])==0){/*tant qu'il y a des voyageur dans le tas*/
+	compte++;
 	current=retirer_tas(&tasCroisiere[i]);/*on prend la personne a plus forte priorité*/
         if(i==current->id1-1){/*Si il s'agit de son premier choix*/
 	  if(choixPlanetePossible(Croisiere[i],j,current->tabChxOrg1[j])==0){/*si son choix de zone j est pas possible*/
@@ -261,6 +270,7 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
 	  }
 	}
       }
+      printf("compte : %d\n",compte);
       printf("fin premiere boucle\n");
       while(liste_personne_vide(tamponPersonne)==0){/*on parcours les personnes dont le choix est impossible*/
 	current=tamponPersonne->val;
@@ -271,13 +281,15 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
 	inserer_tas(&tasTampon,current);
 	tamponPersonne=tamponPersonne->next;
       }
+      printf("fin deuxième boucle\n");
       tasCroisiere[i]=tasTampon;
     }
-    while(tas_vide(tasCroisiere[i])==0){
-	ajout_ligne(retirer_tas(&tasCroisiere[i]),fFinal);
-    }
+    /*while(tas_vide(tasCroisiere[i])==0){
+      printf("passage while\n");
+      ajout_ligne(retirer_tas(&tasCroisiere[i]),fFinal);
+      }*/
   }
-
+  printf("fin traitement croisière\n");
   /*TRAITEMENT DES CHOIX LIBRE*/
   liste_personne nonRespect = creer_liste_personne();/*on stock ici les personnes ne respectant pas les contraintes*/
   liste_personne nonPlace = creer_liste_personne();/*Et ici les personnes sans destinations, faute de place*/
@@ -293,14 +305,18 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
   int indice2;
   int zone;
   while(tas_vide(tasCroisiere[3])==0){
+    printf("infini?\n");
     current=retirer_tas(&tasCroisiere[3]);/*on retire les client par ordre de priorité*/
     current->chxFin=3;/*on traite les choix libre, on rerègle leurs choix*/
+    printf(" Traitement de %s %s\n",current->nom,current->prenom);
     if(respectContrainte(current->tabChxLib,tContrainte,nbLigne)==0){
+      printf(" %s %s ne respecte pas les contrainte\n",current->nom,current->prenom);
       inserer_liste_personne(&nonRespect,current);/*on isole ceux qui ne respectent pas les contraintes*/
     }
     else{
       alreadyInsert='0';/*on initialise à : il n'a pas été inserer dans les autres listes (il respect les contrainte, et il y a de la place*/
       for(i=0;i<nbLigne;i=i+1){/*parcours du tableau des contraintes*/
+	printf("passage dans les contrainte : %d",i);
 	implique=tContrainte[1][i];/*planete impliquée par une autre*/
 	impliquant=tContrainte[0][i];/*Planete qui implique une autre*/
 	Pimplique = convertToPlanete(implique,Croisiere[3]);/*on récupere les objets pout tester les nb de places*/
@@ -378,6 +394,7 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
     }
   }
   while(liste_personne_vide(nonPlace)==0 || liste_personne_vide(nonRespect)==0){
+    printf("infini 2?\n");
     if(liste_personne_vide(nonPlace)==0){
       current=nonPlace->val;
       nonPlace=nonPlace->next;
