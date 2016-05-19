@@ -1,7 +1,7 @@
-#include "tas.h"
-#include "conversion.h"
 #include "listePlanete.h"
 #include "listePersonne.h"
+#include "tas.h"
+#include "conversion.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
@@ -165,12 +165,13 @@ char* premiereDestPossible(liste_planete* choixCroisiere,int zone){
   exit(1);
 }
 
-int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes, croisière 1, croisière 2 , croisière 3, personnes, priorités, contraintes*/ 
+int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes, croisière 1, croisière 2 , croisière 3, personnes, priorités, contraintes*/
   if(argc!=8){
     fprintf(stderr,"nombre incorrect d'arguments. Attendu : 7");
+    exit(1);
   }
   int i,j;
-  FILE* fFinal;
+  FILE* fFinal=fopen("~/Bureau/affectation.csv","w");
   FILE* fplanete=fopen(argv[1],"r");
   FILE* fcroisiere1=fopen(argv[2],"r");
   FILE* fcroisiere2=fopen(argv[3],"r");
@@ -179,12 +180,11 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
   FILE* fpriorite=fopen(argv[6],"r");
   FILE* fcontrainte=fopen(argv[7],"r");
   tas tPersonne = creer_tas();/*Tas stockant l'ensemble des voyageur*/
-  tas* tasCroisiere=(tas*)malloc(4*sizeof(tas));
+  tas* tasCroisiere=(tas*)malloc(4*sizeof(tas));;
   for (i=0;i<4;i=i+1){
     tasCroisiere[i] = creer_tas();/*tas regroupant les voyageurs d'une même croisière*/
   }
   tPersonne = convertir_t_personne(fpersonnes,fpriorite);
-	
   liste_planete* Croisiere[4];/*Une case par croisière. Chaque croisière est une liste de planète*/
   Croisiere[0] = convertir_t_planete(fcroisiere1);/* CROISIERE PLANETE*/
   Croisiere[1] = convertir_t_planete(fcroisiere2);/* CROISIERE SATTELITE*/
@@ -202,12 +202,18 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
   personne current;
   liste_personne memePriorite = creer_liste_personne();
   liste_personne tmp = creer_liste_personne();
-  while(tas_vide(tPersonne)==0){
-    current=retirer_tas(&tPersonne);/*on prend la personne avec la plus grand priorité*/
-    if(liste_personne_vide(memePriorite)==1 || previous->priorite==current->priorite){
+  int lastOne=0;
+  int termination=0;
+  while(tas_vide(tPersonne)==0 || lastOne==1){
+    if(tas_vide(tPersonne)==0){
+      current=retirer_tas(&tPersonne);/*on prend la personne avec la plus grand priorité*/
+    }
+    if((liste_personne_vide(memePriorite)==1 || previous->priorite==current->priorite) && lastOne==0){
       inserer_liste_personne(&memePriorite,current);/*On stock la personne dans la liste si elle a la même priorité que les précédente personnes*/
     } 
     else{
+      if(lastOne==1){termination=1;}
+      lastOne=0;
       tmp=memePriorite;
       while(liste_personne_vide(tmp) != 1){/*on parcours les voyageurs de même priorité*/
 	current=tmp->val;
@@ -217,7 +223,6 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
 	  retirer_liste_personne(&memePriorite,current);/*On retire la personne de la liste des voyageurs de même prio*/
 	}
 	tmp=tmp->next;
-	current=tmp->val;
       }
       tmp=memePriorite;
       while(liste_personne_vide(tmp) != 1){/*On reparcours la liste pour les gens n'ayant pas eu leurs 1er Choix*/
@@ -234,12 +239,14 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
 	}
       }
     }
+    if(tas_vide(tPersonne)==1 && termination==0){lastOne=1;}
     previous=current;
   }
 
   /*--TRAITEMENT DES PLANETES DANS CROISIERE--*/
   char* imposition;
   planete Pimposition;
+  printf("premiere boucle fini\n");
   for(i=0;i<3;i=i+1){/*Pour chaque croisière organisée*/
     for(j=0;j<6;j=j+1){/*Pour chaque zone*/
       tas tasTampon=creer_tas();
@@ -306,54 +313,54 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
   int indice2;
   int zone;
   while(tas_vide(tasCroisiere[3])==0){
-    current=retirer_tas(&tasCroisiere[3]);
-    current->chxFin=3;
+    current=retirer_tas(&tasCroisiere[3]);/*on retire les client par ordre de priorité*/
+    current->chxFin=3;/*on traite les choix libre, on rerègle leurs choix*/
     if(respectContrainte(current->tabChxLib,tContrainte,nbLigne)==0){
-      inserer_liste_personne(&nonRespect,current);
+      inserer_liste_personne(&nonRespect,current);/*on isole ceux qui ne respectent pas les contraintes*/
     }
     else{
-      alreadyInsert='0';
-      for(i=0;i<nbLigne;i=i+1){
-	implique=tContrainte[1][i];
-	impliquant=tContrainte[0][i];
-	Pimplique = convertToPlanete(implique,Croisiere[3]);
+      alreadyInsert='0';/*on initialise à : il n'a pas été inserer dans les autres listes (il respect les contrainte, et il y a de la place*/
+      for(i=0;i<nbLigne;i=i+1){/*parcours du tableau des contraintes*/
+	implique=tContrainte[1][i];/*planete impliquée par une autre*/
+	impliquant=tContrainte[0][i];/*Planete qui implique une autre*/
+	Pimplique = convertToPlanete(implique,Croisiere[3]);/*on récupere les objets pout tester les nb de places*/
 	Pimpliquant = convertToPlanete(impliquant,Croisiere[3]);
-	if((dansLesChoix(current->tabChxLib,implique)==1) && (dansLesChoix(current->tabChxLib,impliquant)==0) && (Pimpliquant->nbPlaces > Pimplique->nbPlaces - 1)){
-	  inserer_liste_personne(&nonPlace,current);
+	if((dansLesChoix(current->tabChxLib,implique)==1) && (dansLesChoix(current->tabChxLib,impliquant)==0) && (Pimpliquant->nbPlaces > Pimplique->nbPlaces - 1)){/*on vérifie qu'il reste des places dans les planetes contraintes*/
+	  inserer_liste_personne(&nonPlace,current);/*pas de place => on insère*/
 	  alreadyInsert='1';
 	  break;
 	}
       }
-      if(alreadyInsert == '0'){
-	for(i=0;i<6;i=i+1){
-	  if(current->assigned[i]==0){
-	    choix=current->tabChxLib[i];
-	    Pchoix=convertToPlanete(choix,Croisiere[3]);
-	    indice=dansContrainte(choix,tContrainte,0,nbLigne);
+      if(alreadyInsert == '0'){/*traitement uniquement si current n'a pas bouger vers les autres listes*/
+	for(i=0;i<6;i=i+1){/*pour toutes les zones*/
+	  if(current->assigned[i]==0){/*si la zone n'est pas déja assignée*/
+	    choix=current->tabChxLib[i];/*on retient son choix*/
+	    Pchoix=convertToPlanete(choix,Croisiere[3]);/*on récupère l'objet planete*/
+	    indice=dansContrainte(choix,tContrainte,0,nbLigne);/*on vérifie si elle fait partie des contraintes*/
 	    indice2=dansContrainte(choix,tContrainte,1,nbLigne);
-	    if(indice>-1){
-	      implique=tContrainte[1][indice];
+	    if(indice>-1){/*si son choix implique une autre planete*/
+	      implique=tContrainte[1][indice];/*on récupère ladite planète*/
 	      Pimplique = convertToPlanete(implique,Croisiere[3]);
-	      if((Pchoix->nbPlaces==0) || (Pimplique->nbPlaces==0)){
-		inserer_liste_personne(&nonPlace,current);
-		alreadyInsert='1';
+	      if((Pchoix->nbPlaces <= 0) || (Pimplique->nbPlaces <= 0)){/*si ya plus de place*/
+		inserer_liste_personne(&nonPlace,current);/*on ajoute la personne dans la liste de ceux qui n'ont pas trouvé de place*/
+		alreadyInsert='1';/*on indique qu'il a été inséré dans une liste*/
 		break;
 	      }
-	      else{
+	      else{/*sinon pas de soucis on ajoute les 2 planetes a leurs destinations*/
 		zone=quelZone(implique,Croisiere[3]);
 		current->tabChxLib[i]=choix;
 		current->tabChxLib[zone]=implique;
-		supprimerPlace(Croisiere[3],i,choix);
+		supprimerPlace(Croisiere[3],i,choix);/*on supprime une place*/
 		supprimerPlace(Croisiere[3],zone,implique);
-		current->assigned[i]=1;
+		current->assigned[i]=1;/*et on met à jour les assignations*/
 		current->assigned[zone]=1;
 		
 	      }
 	    }
-	    else if(indice2>-1){
-	      impliquant=tContrainte[0][indice2];
+	    else if(indice2>-1){/*sinon si la planete est impliquée par un autre*/
+	      impliquant=tContrainte[0][indice2];/*on récupère la planète nécéssaire*/
 	      Pimpliquant=convertToPlanete(impliquant,Croisiere[3]);
-	      if(dansLesChoix(current->tabChxLib,impliquant)){
+	      if(dansLesChoix(current->tabChxLib,impliquant)){/*si cette planete est dans les choix*/
 		zone=quelZone(impliquant,Croisiere[3]);
 		current->tabChxLib[i]=choix;
 		current->tabChxLib[zone]=impliquant;
