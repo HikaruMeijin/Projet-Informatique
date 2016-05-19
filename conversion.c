@@ -718,19 +718,18 @@ char*** convertir_contrainte(FILE * f,int sizetab)
 
 void ajout_ligne ( personne Personne , FILE * file)
 {
-    char ligne[300] ;
+    char ligne[3000] ;
     if(Personne->chxFin == 1) //si la croisiere finale est contenue dans le premier choix
     {
-        sscanf(ligne,"%s,%s,%s,%s,%s,%s,%s,%s\n",Personne->nom,Personne->prenom,Personne->tabChxOrg1[0],Personne->tabChxOrg1[1],Personne->tabChxOrg1[2],Personne->tabChxOrg1[3],Personne->tabChxOrg1[4],Personne->tabChxOrg1[5]) ;
+        sprintf(ligne,"%s,%s,%s,%s,%s,%s,%s,%s\n",Personne->nom,Personne->prenom,Personne->tabChxOrg1[0],Personne->tabChxOrg1[1],Personne->tabChxOrg1[2],Personne->tabChxOrg1[3],Personne->tabChxOrg1[4],Personne->tabChxOrg1[5]) ;
     }
     else if (Personne->chxFin == 2) //si la croisiere finale est contenue dans le second choix
     {
-        sscanf(ligne,"%s,%s,%s,%s,%s,%s,%s,%s\n",Personne->nom,Personne->prenom,Personne->tabChxOrg2[0],Personne->tabChxOrg2[1],Personne->tabChxOrg2[2],Personne->tabChxOrg2[3],Personne->tabChxOrg2[4],Personne->tabChxOrg2[5]) ;
+        sprintf(ligne,"%s,%s,%s,%s,%s,%s,%s,%s\n",Personne->nom,Personne->prenom,Personne->tabChxOrg2[0],Personne->tabChxOrg2[1],Personne->tabChxOrg2[2],Personne->tabChxOrg2[3],Personne->tabChxOrg2[4],Personne->tabChxOrg2[5]) ;
     }
     else if ((Personne->chxFin) == 3) //si la croisiere finale est contenue dans le choix libre
     {
-        sscanf(ligne,"%s,%s,%s,%s,%s,%s,%s,%s\n",Personne->nom,Personne->prenom,Personne->tabChxLib[0],Personne->tabChxLib[1],Personne->tabChxLib[2],Personne->tabChxLib[3],Personne->tabChxLib[4],Personne->tabChxLib[5]) ;
+        sprintf(ligne,"%s,%s,%s,%s,%s,%s,%s,%s\n",Personne->nom,Personne->prenom,Personne->tabChxLib[0],Personne->tabChxLib[1],Personne->tabChxLib[2],Personne->tabChxLib[3],Personne->tabChxLib[4],Personne->tabChxLib[5]) ;
     }
-    fseek(file,0,SEEK_END) ; //on se place a la fin du fichier
-    fwrite(ligne,sizeof(ligne),1,file) ; // on ecrit la ligne
+    fputs(ligne,file) ;// on ecrit la ligne
 }
