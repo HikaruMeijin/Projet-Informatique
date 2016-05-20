@@ -59,16 +59,17 @@ int nb_places_planete(char* namePla, liste_planete* tabListPla, int tabSize)
 	int i;
 	liste_planete curLink = NULL;
 
-	for (i = 0; i < tabSize; i++)
+	for (i = 0; i < tabSize; i++) /* Parcours du tableau */
 	{
-		curLink = tabListPla[i];
-		while (curLink != NULL)
+		curLink = tabListPla[i]; /* On affecte le maillon courant en tête de la i-eme liste_planete */
+		while (curLink != NULL) /* Parcours de la i-eme liste_planete */
 		{
-			if (strcmp(curLink->val->nom, namePla) == 0) { return curLink->val->nbPlaces; }
-
+			/* si namePla et le nom de la planete du maillon courant correspondent */
+			if (strcmp(curLink->val->nom, namePla) == 0) { return curLink->val->nbPlaces; } /* on retourne le nombre de places restantes de cette planete */
+			/* sinon, on passe au maillon suivant */
 			curLink = curLink->next;
 		}
 	}
-
-	return -1;
+	/* si namePla ne correspond à aucune planete de notre tableau de listes */
+	return -1; /* on retourne -1 */
 }
