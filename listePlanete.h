@@ -8,7 +8,7 @@ typedef struct planete_base {
 
 typedef struct liste_planete_base {
 	planete val;
-	liste_planete next;
+	struct liste_planete_base * next;
 } * liste_planete;
 
 /*	@requires : nothing

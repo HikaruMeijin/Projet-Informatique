@@ -3,7 +3,7 @@
 #include <math.h>
 #include "tas.h"
 
-#define TailleTableau 256
+#define TailleTableau 256 /*taille à modifier selon la taille du tableau de personne*/
 
 tas creer_tas() {
 	tas t = (tas) malloc(sizeof(struct tas_base));
