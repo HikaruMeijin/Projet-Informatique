@@ -172,11 +172,6 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
     fprintf(stderr,"%s : nombre incorrect d'arguments. Attendu : 7\n",argv[0]);
     exit(1);
   }
-  if(strcmp(argv[1],"destinations.csv")!=0 || strcmp(argv[2],"croisiere_planetes.csv")!=0 || strcmp(argv[3],"croisiere_satellites.csv")!=0 || strcmp(argv[4],"croisiere_vie.csv")!=0 || strcmp(argv[5],"souhaits_voyageurs.csv")!=0 || strcmp(argv[6],"priorites.csv")!=0 || strcmp(argv[7],"contraintes.csv")!=0)
-  {
-    fprintf(stderr,"%s : arguments invalides veuillez respecter l'orthographe du manuel\n",argv[0]) ;
-    exit(1) ;
-  }
   int i,j;
   mkdir("resultat",S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
   remove("resultat/affectation.csv");
