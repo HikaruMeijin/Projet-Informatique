@@ -1,7 +1,10 @@
-all : traitement
+all : traitement 
 
 traitement : main.o tas.o conversion.o listePersonne.o listePlanete.o
 	gcc -Wall -Wextra $^ -lm -o $@
+
+test.o : test.c tas.h listePersonne.h listePlanete.h conversion.h
+	gcc -Wall -Wextra -c $^
 
 main.o : main.c tas.h listePersonne.h listePlanete.h conversion.h
 	gcc -Wall -Wextra -c $^
