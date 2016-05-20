@@ -12,6 +12,9 @@
 #include <unistd.h>
 #include <sys/mman.h>
 
+/*@requires nomPlanete existe dans toutePlanete && toutePlanete contient toute les planetes
+  @assigns nothing
+  @ensures renvoi l'objet planète depuis toutePlanete correspondant à nomPlanete*/
 planete convertToPlanete(char* nomPlanete,liste_planete* toutePlanete){
   int i;
   liste_planete currentZone=creer_liste_planete();
@@ -30,6 +33,9 @@ planete convertToPlanete(char* nomPlanete,liste_planete* toutePlanete){
   exit(1);
 }
 
+/*@requires nomPlanete existe dans toutePlanete && toutePlanete contient toute les planetes
+  @assigns nothing
+  @ensures renvoi la zone où se situe nomPlanete depuis toutePlanete*/
 int quelZone(char* nomPlanete,liste_planete* toutePlanete){
   int i;
   liste_planete currentZone=creer_liste_planete();
@@ -47,6 +53,9 @@ int quelZone(char* nomPlanete,liste_planete* toutePlanete){
   return -1;
 }
 
+/*@requires nomPlanete existe, contrainte valide, partie == {0;1}, size >= 0 & size < 6
+  @assigns nothing
+  @ensures renvoie la position de nomPlanete dans contrainte si nomPlanete existe dans contrainte, -1 sinon*/
 int dansContrainte(char* nomPlanete,char*** contrainte,int partie,int size){
   int i;
   int indice=-1;
@@ -59,6 +68,9 @@ int dansContrainte(char* nomPlanete,char*** contrainte,int partie,int size){
   return indice;
 }
 
+/*@requires choix[] valide, nomPlanete existe
+  @assigns nothing
+  @ensures renvoi 1 si nomPlanete est ans choix[], 0 sinon*/
 int dansLesChoix(char* choix[],char* nomPlanete){
   int present=0;
   int i;
@@ -169,14 +181,12 @@ char* premiereDestPossible(liste_planete* choixCroisiere,int zone){
 
 int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes, croisière 1, croisière 2 , croisière 3, personnes, priorités, contraintes*/
   if(argc!=8){
-    fprintf(stderr,"%s : nombre incorrect d'arguments. Attendu : 7\n",argv[0]);
+    fprintf(stderr,"nombre incorrect d'arguments. Attendu : 7");
     exit(1);
   }
   int i,j;
-  mkdir("resultat",S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-  remove("resultat/affectation.csv");
-  
-  FILE* fFinal=fopen("resultat/affectation.csv","a");
+  remove("affectation.csv");
+  FILE* fFinal=fopen("affectation.csv","a");
   FILE* fplanete=fopen(argv[1],"r");
   FILE* fcroisiere1=fopen(argv[2],"r");
   FILE* fcroisiere2=fopen(argv[3],"r");
@@ -184,11 +194,6 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
   FILE* fpersonnes=fopen(argv[5],"r");
   FILE* fpriorite=fopen(argv[6],"r");
   FILE* fcontrainte=fopen(argv[7],"r");
-  if(fFinal == NULL || fplanete == NULL || fcroisiere1 == NULL || fcroisiere2 == NULL || fcroisiere3 == NULL || fpersonnes == NULL || fpriorite == NULL || fcontrainte == NULL)
-  {
-	fprintf(stderr,"%s : erreur lors de l'ouverture d'un fichier\n",argv[0]) ;
-	exit(1) ;
-  }
   tas tPersonne = creer_tas();/*Tas stockant l'ensemble des voyageur*/
   tas* tasCroisiere=(tas*)malloc(4*sizeof(tas));;
   for (i=0;i<4;i=i+1){
@@ -242,14 +247,11 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
   /*--TRAITEMENT DES PLANETES DANS CROISIERE--*/
   char* imposition;
   planete Pimposition;
-  int compte=0;
   for(i=0;i<3;i=i+1){/*Pour chaque croisière organisée*/;
     for(j=0;j<6;j=j+1){/*Pour chaque zone*/
-      compte=0;
       tas tasTampon=creer_tas();
       liste_personne tamponPersonne = creer_liste_personne();
       while(tas_vide(tasCroisiere[i])==0){/*tant qu'il y a des voyageur dans le tas*/
-	compte++;
 	current=retirer_tas(&tasCroisiere[i]);/*on prend la personne a plus forte priorité*/
         if(i==current->id1-1){/*Si il s'agit de son premier choix*/
 	  if(choixPlanetePossible(Croisiere[i],j,current->tabChxOrg1[j])==0){/*si son choix de zone j est pas possible*/
@@ -348,7 +350,7 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
 	      impliquant=tContrainte[0][indice2];/*on récupère la planète nécéssaire*/
 	      Pimpliquant=convertToPlanete(impliquant,Croisiere[3]);
 	      if(dansLesChoix(current->tabChxLib,impliquant)){/*si cette planete est dans les choix*/
-		zone=quelZone(impliquant,Croisiere[3]);
+		zone=quelZone(impliquant,Croisiere[3]);/*alors on ajoute les deux*/
 		current->tabChxLib[i]=choix;
 		current->tabChxLib[zone]=impliquant;
 		supprimerPlace(Croisiere[3],i,choix);
@@ -356,9 +358,9 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
 		current->assigned[i]=1;
 		current->assigned[zone]=1;
 	      }
-	      else if((Pchoix->nbPlaces) - 1 < (Pimpliquant->nbPlaces)){
+	      else if((Pchoix->nbPlaces) - 1 < (Pimpliquant->nbPlaces)){/*sinon si le nombre de place de la planete impliquant le choix passerais au dessus apres affectation, on arrête les affectation*/
 		inserer_liste_personne(&nonPlace,current);
-		alreadyInsert=1;
+		alreadyInsert=1;/*on indique que current a été ajouté dans la liste pour arrêter les affectations*/
 		break;
 	      }
 	      else{
@@ -366,53 +368,53 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
 		supprimerPlace(Croisiere[3],i,choix);
 	      }
 	    }
-	    else{
-	      if(choixPlanetePossible(Croisiere[3],i,choix)==1){
+	    else{/*choix n'apparait dans aucune contrainte*/
+	      if(choixPlanetePossible(Croisiere[3],i,choix)==1){/*et si il y a de la place*/
 		current->assigned[i]=1; /*le nombre de place est mis à jour dans la fonction dans le test*/
-		current->tabChxLib[i]=choix;
+		current->tabChxLib[i]=choix; /*ainsi que son choix*/
 	      }
-	      else{
-		inserer_liste_personne(&nonPlace,current);
+	      else{/*il n'y a plus de place*/
+		inserer_liste_personne(&nonPlace,current);/*on l'ajoute dans la liste de ceux qui ont un probleme de place*/
 	        alreadyInsert=1;
 		break;
 	      }
 	    }
 	  }
 	}
-	if (alreadyInsert==0){
+	if (alreadyInsert==0){/*si current n'a pas été inséré i.e. si tout ses choix ont fonctionné : on ajoute la personne au document final*/
 	  ajout_ligne(current,fFinal);
 	}
       }
     }
   }
-  while(liste_personne_vide(nonPlace)==0 || liste_personne_vide(nonRespect)==0){
-    if(liste_personne_vide(nonPlace)==0){
+  while(liste_personne_vide(nonPlace)==0 || liste_personne_vide(nonRespect)==0){/*tant qu'il reste des gens a traité dans les 2 liste*/
+    if(liste_personne_vide(nonPlace)==0){/*on retire et traite en priorité ceux qui n'ont pas eu de place*/
       current=nonPlace->val;
       nonPlace=nonPlace->next;
     }
-    else{
+    else{/*puis quand tout ceux la ont été traité, on traite ceux qui n'ont pas respecté les contraintes*/
       current=nonRespect->val;
       nonRespect=nonRespect->next;
     }
     
-    for(i=0;i<6;i=i+1){
-      if (current->assigned[i] == 0){
-	choix=current->tabChxLib[i];
+    for(i=0;i<6;i=i+1){/*pour chaque zone*/
+      if (current->assigned[i] == 0){/*on applique l'algorithme a la zone i uniquement si elle a pas déja été traité avant*/
+	choix=current->tabChxLib[i];/*on retient son choix*/
 	Pchoix=convertToPlanete(choix,Croisiere[3]);
-	if(Pchoix->nbPlaces > 0){
-	  if(dansContrainte(choix,tContrainte,0,nbLigne)==-1 && dansContrainte(choix,tContrainte,1,nbLigne)==-1){
-	    current->assigned[i]=1;/*pas besoin d'assigner le choix, c'est déjà fait par definition*/
+	if(Pchoix->nbPlaces > 0){/*si son choix a encore des places libres*/
+	  if(dansContrainte(choix,tContrainte,0,nbLigne)==-1 && dansContrainte(choix,tContrainte,1,nbLigne)==-1){/*si son choix n'apparait dans aucune contrainte*/
+	    current->assigned[i]=1;/*alors il n'y a aucun soucis*/
 	    supprimerPlace(Croisiere[3],i,choix);
 	  }
-	  else{
-	    indice=dansContrainte(choix,tContrainte,0,nbLigne);
-	    if(indice>-1){
-	      implique=tContrainte[1][indice];
+	  else{/*sinon on regarde quelle contrainte est concernée*/
+	    indice=dansContrainte(choix,tContrainte,0,nbLigne);/*choix implique une autre planete?*/
+	    if(indice>-1){/*si oui*/
+	      implique=tContrainte[1][indice];/*on recupere la planete impliquée*/
 	      Pimplique=convertToPlanete(implique,Croisiere[3]);
-	      if(Pimplique->nbPlaces > 0 ){
+	      if(Pimplique->nbPlaces > 0 ){/*si la planete impliquée est libre*/
 		zone=quelZone(implique,Croisiere[3]);
-		if(current->assigned[zone]==0 || dansLesChoix(current->tabChxLib,implique)==1){
-		  current->tabChxLib[zone]=implique;
+		if(current->assigned[zone]==0 || dansLesChoix(current->tabChxLib,implique)==1){/*on vérifie que la zone ou se situe la planete impliqué n'a pas déjà été traitée ou si cette planete est dans les choix*/
+		  current->tabChxLib[zone]=implique;/*si une de ces conditions est vrai, on assigne les deux*/
 		  supprimerPlace(Croisiere[3],i,choix);
 		  supprimerPlace(Croisiere[3],zone,implique);
 		  current->assigned[i]=1;
@@ -420,59 +422,59 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
 		}
 	      }
 	    }
-	    else{
+	    else{/*choix n'implique rien, donc choix est impliqué (car choix est dans les contrainte)*/
 	      indice=dansContrainte(choix,tContrainte,1,nbLigne);
-	      impliquant=tContrainte[0][indice];
+	      impliquant=tContrainte[0][indice];/*on récupere la planete qui implique choix*/
 	      Pimpliquant=convertToPlanete(impliquant,Croisiere[3]);
-	      if(Pchoix->nbPlaces - 1 >= Pimpliquant->nbPlaces){
+	      if(Pchoix->nbPlaces - 1 >= Pimpliquant->nbPlaces){/*si les contraintes de place sont respectée, on assigne*/
 		supprimerPlace(Croisiere[3],i,choix);
 		current->assigned[i]=1;
 	      }
 	    }
 	  }
 	}
-	if(current->assigned[i]==0){
-	  parcoursPlanete=Croisiere[3][i];
-	  while(liste_planete_vide(parcoursPlanete)==0){
+	if(current->assigned[i]==0){/*Si il n'y a pas eu d'affectation précédement dans la zone i*/
+	  parcoursPlanete=Croisiere[3][i];/*il faut regarder les autres planetes de ladite zone*/
+	  while(liste_planete_vide(parcoursPlanete)==0){/*parcours...*/
 	    imposition=(parcoursPlanete->val)->nom;
-	    if(strcmp(imposition,choix)!=0){
+	    if(strcmp(imposition,choix)!=0){/*le parcours risque de passé par le choix. On vérifie qu'on ne traite pas ce cas là*/
 	      Pimposition=convertToPlanete(imposition,Croisiere[3]);
-	      indice=dansContrainte(imposition,tContrainte,0,nbLigne);
+	      indice=dansContrainte(imposition,tContrainte,0,nbLigne);/*on récupère les contrainte concernée par imposition, si elles existes*/
 	      indice2=dansContrainte(imposition,tContrainte,1,nbLigne);
-	      if(Pimposition->nbPlaces > 0 && indice==-1){
-		if(indice2>-1){
+	      if(Pimposition->nbPlaces > 0 && indice==-1){/*si la planete parcouru est libre et n'implique aucune planete*/
+		if(indice2>-1){/*si imposition est impliquée*/
 		  impliquant=tContrainte[0][indice2];
 		  Pimpliquant=convertToPlanete(impliquant,Croisiere[3]);
-		  if(Pimposition->nbPlaces - 1 >= Pimpliquant->nbPlaces){
-		    current->tabChxLib[i]=imposition;
+		  if(Pimposition->nbPlaces - 1 >= Pimpliquant->nbPlaces){/*on vérifie les conditions de place lié au contrainte*/
+		    current->tabChxLib[i]=imposition;/*assignation si respect*/
 		    current->assigned[i]=1;
 		    supprimerPlace(Croisiere[3],i,imposition);
-		    break;
+		    break;/*zone assignée, on stop*/
 		  }
-		  if(dansLesChoix(current->tabChxLib,impliquant)==1){
-		    zone=quelZone(impliquant,Croisiere[3]);
+		  if(dansLesChoix(current->tabChxLib,impliquant)==1){/*sinon on regarde si la planete impliquant la planete imposée est dans les choix, ce qui reglerais ce problème e place*/
+		    zone=quelZone(impliquant,Croisiere[3]);/*si oui on affecte les deux*/
 		    current->tabChxLib[i]=imposition;
 		    current->tabChxLib[zone]=impliquant;
 		    supprimerPlace(Croisiere[3],i,imposition);
 		    supprimerPlace(Croisiere[3],zone,impliquant);
 		    current->assigned[i]=1;
 		    current->assigned[zone]=1;
-		    break;
+		    break;/*zone assigné, stop*/
 		  }
 		}
-		else{
+		else{/*sinon imposition n'est dans aucune contrainte, et est libre : affectation*/
 		  current->tabChxLib[i]=imposition;
 		  current->assigned[i]=1;
 		  supprimerPlace(Croisiere[3],i,imposition);
 		  break;
 		}
 	      }
-	      else if(Pimposition->nbPlaces > 0 && indice>-1){
+	      else if(Pimposition->nbPlaces > 0 && indice>-1){/*si la planete et libre et en implique une autre*/
 		implique=tContrainte[1][indice];
 		Pimplique=convertToPlanete(implique,Croisiere[3]);
 		zone=quelZone(implique,Croisiere[3]);
-		if(Pimplique->nbPlaces > 0 && current->assigned[zone]==0){
-		  current->tabChxLib[i]=imposition;
+		if(Pimplique->nbPlaces > 0 && current->assigned[zone]==0){/*on vérifie que la planete impliqué par la planete impose soit libre et que la zone ne soit pas déja assignée*/
+		  current->tabChxLib[i]=imposition;/*si c'est respecté, aucune problème : on affecte les 2*/
 		  current->tabChxLib[zone]=implique;
 	          supprimerPlace(Croisiere[3],i,imposition);
 		  supprimerPlace(Croisiere[3],zone,implique);
@@ -482,12 +484,12 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
 		}
 	      }
 	    }
-	    parcoursPlanete=parcoursPlanete->next;
+	    parcoursPlanete=parcoursPlanete->next;/*la planete imposée n'est pas libre, ou inaffectable : on passe a la suivante*/
 	  }
 	}
       }
     }
-    for(i=0;i<nbLigne;i=i+1){
+    for(i=0;i<nbLigne;i=i+1){/*ce bout de code permet de regler le cas ou il n'y a plus assez de place autre part que dans une planete qui en implique un autre qui n'a pas été choisie par C*/
       impliquant=tContrainte[0][i];
       implique=tContrainte[1][i];
       zone=quelZone(implique,Croisiere[3]);
@@ -496,7 +498,7 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
 	current->assigned[zone]=1;
       }
     }
-    for(i=0;i<6;i=i+1){
+    for(i=0;i<6;i=i+1){/*on vérifie que tout a été assigné*/
       if(current->assigned[i]==0){
 	printf("Erreur : planete non assigné");
 	exit(1);
