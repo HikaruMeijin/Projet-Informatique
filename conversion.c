@@ -16,63 +16,63 @@
 
 /*@requires chaine une chaine de caractere et caractere un char
   @assigns chaine
-  @ensures rajoute le caractère à la fin de la chaines
+  @ensures rajoute le caractÃ¨re Ã  la fin de la chaine
 */
 void inserecara(char * chaine, char caractere)
 {
     int i = strlen(chaine) ; //on calcule la taille de la chaine
-    chaine[i] = caractere ; //on ajoute le caractère a la fin
+    chaine[i] = caractere ; //on ajoute le caractÃ¨re a la fin
     chaine[i+1] ='\0' ; //on finit la chaine par '\0' 
 }
 
-/*  @requires : f1 et f2 deux flux sur les fichiers des personnes (f1 = flux sur le tableau de priorite et f2 = flux sur le tableau desouhait)
+/*  @requires : f1 et f2 deux flux sur les fichiers des personnes (f1 = flux sur le tableau de priorite et f2 = flux sur le tableau de souhait)
     @assigns : nothing
-    @ensures : retourne le tas où sont rangés toutes les personnes*/
+    @ensures : retourne le tas oÃ¹ sont rangÃ©es toutes les personnes*/
 tas convertir_t_personne(FILE * f1,FILE * f2)
 {
-    tas tasP = creer_tas() ; //création du tas où on va rentrer les personnes
+    tas tasP = creer_tas() ; //crÃ©ation du tas oÃ¹ on va rentrer les personnes
     char tampon1[BUFSIZE] ; //tampon qui contiendra la ligne a traiter
     char tmp[300] ; //tampon pour contenir la chaine de caractere de chaque case de la ligne
     tmp[0] = '\0' ; //on initialise les tampons
     tampon1[0]='\0';
     while(fgets(tampon1,BUFSIZE,f1)) //tant qu'on peut lire une ligne du tableau de souhait : le fichier est pas infini, la boucle est finie
     {
-	personne personneTraite = creer_personne()  ; //on cree la personne où on va rentrer toutes ses informations
+	personne personneTraite = creer_personne()  ; //on cree la personne oÃ¹ on va rentrer toutes ses informations
 	int nonfinligne = 1 ; //variable dont la valeur est 1 quand la ligne est pas finie et 0 quand elle est finie
         int i = 0 ; //variable pour le parcours de la ligne
 	int j = 1 ; //variable pour savoir quelle information on a traitee
         int k = 1 ; //variable pour savoir quelle zone est traitee
         while (nonfinligne) //tant que la ligne n'est pas finie : la ligne est pas infini donc tampon[i] == '\n' -> nonfinligne = 0 ;
         {
-            if(tampon1[i]==',' || tampon1[i] =='\n') //on est tombé sur le délimitateur de case ou sur la fin de la ligne
+            if(tampon1[i]==',' || tampon1[i] =='\n') //on est tombÃ© sur le dÃ©limitateur de case ou sur la fin de la ligne
             {
                 switch (j)
                 {
                     case 1 : //la premiere case est le nom de la personne
                     {
-                            personneTraite->nom = malloc(20*sizeof(char)) ; //on alloue la mémoire pour ranger l'info
+                            personneTraite->nom = malloc(20*sizeof(char)) ; //on alloue la mÃ©moire pour ranger l'info
 			    sprintf(personneTraite->nom,"%s",tmp) ;
                        	    j=j+1 ; //on passe a la seconde case
-                            tmp[0] = '\0' ; //la variable tampon est réinitialisée
+                            tmp[0] = '\0' ; //la variable tampon est rÃ©initialisÃ©e
                             break ;
                     }
                     case 2 : //la seconde case est le prenom de la personne
                     {
-                            personneTraite->prenom = malloc(20*sizeof(char)) ; //on alloue la mémoire pour ranger l'info
+                            personneTraite->prenom = malloc(20*sizeof(char)) ; //on alloue la mÃ©moire pour ranger l'info
 			    sprintf(personneTraite->prenom,"%s",tmp) ;
 		            j=j+1 ; //on passe a la 3eme case 
-                            tmp[0] = '\0' ; //la variable tampon est réinitialisée
+                            tmp[0] = '\0' ; //la variable tampon est rÃ©initialisÃ©e
 			    break ;
                            
                     }
                     case 3 : //la 3eme case est le premier souhait de la personne
                     {
-			    //selon le souhait de la personne, on donne une valeur entiere propre à la croisière choisie
-			    // 1 : croisière planetes
+			    //selon le souhait de la personne, on donne une valeur entiere propre Ã  la croisiÃ¨re choisie
+			    // 1 : croisiÃ¨re planetes
                             // 2 : croisiere satellites
-			    // 3 : croisière vie
-			    // 4 : croisière libre
-			    // Si de nouvelles croisieres sont ajoutées dans le futur il faudra rajouter une conditionnelle avec un nouvel entier 
+			    // 3 : croisiÃ¨re vie
+			    // 4 : croisiÃ¨re libre
+			    // Si de nouvelles croisieres sont ajoutÃ©es dans le futur il faudra rajouter une conditionnelle avec un nouvel entier 
                             if(strcmp(tmp,"satellites")==0)
                             {
                                 personneTraite->id1 = 2 ; //le premier choix est fixe sur la croisiere satellite
@@ -89,24 +89,24 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                             {
                                 personneTraite->id1 = 4 ; //le premier choix est fixe sur la croisiere libre
                             }
-                            else //cas où le type de croisière n'est pas reconnu (normalement cas n'existant pas hors erreur humaine)
+                            else //cas oÃ¹ le type de croisiÃ¨re n'est pas reconnu (normalement cas n'existant pas hors erreur humaine)
                             {
-                                fprintf(stderr,"Conversion : Type de croisière non reconnue\n") ;
+                                fprintf(stderr,"Conversion : Type de croisiÃ¨re non reconnue\n") ;
                                 exit(1) ;
                             }
 			    j=j+1 ; //on passe a la 4eme case
-                            tmp[0] = '\0' ; //la variable tampon est réinitialisée
+                            tmp[0] = '\0' ; //la variable tampon est rÃ©initialisÃ©e
 			    break ;
                            
                     }
                     case 4 : //la 4eme case est le second choix de la personne
                     {
-			    //selon le souhait de la personne, on donne une valeur entiere propre à la croisière choisie
-			    // 1 : croisière planetes
+			    //selon le souhait de la personne, on donne une valeur entiere propre Ã  la croisiÃ¨re choisie
+			    // 1 : croisiÃ¨re planetes
                             // 2 : croisiere satellites
-			    // 3 : croisière vie
-			    // 4 : croisière libre
-			    // Si de nouvelles croisieres sont ajoutées dans le futur il faudra rajouter une conditionnelle avec un nouvel entier 
+			    // 3 : croisiÃ¨re vie
+			    // 4 : croisiÃ¨re libre
+			    // Si de nouvelles croisieres sont ajoutÃ©es dans le futur il faudra rajouter une conditionnelle avec un nouvel entier 
                             if(strcmp(tmp,"satellites")==0)
                             {
                                 personneTraite->id2 = 2 ; //le premier choix est fixe sur la croisiere satellite
@@ -123,18 +123,18 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                             {
                                 personneTraite->id2 = 4 ; //le premier choix est fixe sur la croisiere libre
                             }
-                            else //cas où le type de croisière n'est pas reconnu(cas impossible normalement hors faute humaine dans la prise de note)
+                            else //cas oÃ¹ le type de croisiÃ¨re n'est pas reconnu(cas impossible normalement hors faute humaine dans la prise de note)
                             {
-                                fprintf(stderr,"Conversion : Type de croisière non reconnue\n") ;
+                                fprintf(stderr,"Conversion : Type de croisiÃ¨re non reconnue\n") ;
                                 exit(1) ;
                             }
 			    j=j+1 ;
 			    tmp[0] = '\0' ;
 			    break ;
                     }
-                    case 5 : //on traite la première selection de planetes (croisiere planetes = 6 zones) 
+                    case 5 : //on traite la premiÃ¨re selection de planetes (croisiere planetes = 6 zones) 
                     {
-			//Ici, trois cas se présentent : -le premier choix est planetes
+			//Ici, trois cas se prÃ©sentent : -le premier choix est planetes
 			//				 -le deuxieme choix est planetes
 			//				 -Aucun des deux choix est planetes
                         if(personneTraite->id1 == 1) //Le premier choix est planetes, on va rentrer toutes les planetes dans le tableau de choix1
@@ -180,8 +180,8 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                               {
                                   personneTraite->tabChxOrg1[5] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg1[5],"%s",tmp) ;
-                                  j=j+1 ; //toutes les zones ont été traitées pour la croisière, on peut passer a la prochaine
-                                  k= 1 ; //on réinitialise la variable des zones
+                                  j=j+1 ; //toutes les zones ont Ã©tÃ© traitÃ©es pour la croisiÃ¨re, on peut passer a la prochaine
+                                  k= 1 ; //on rÃ©initialise la variable des zones
                                   break ;
                               }
                              
@@ -230,19 +230,19 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                               {
                                   personneTraite->tabChxOrg2[5] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxOrg2[5],"%s",tmp) ;
-                                  j=j+1 ; //toutes les zones ont été traitées pour la croisiere, on peut passer a la prochaine
-                                  k= 1 ; //on réinitialise la variable des zones
+                                  j=j+1 ; //toutes les zones ont Ã©tÃ© traitÃ©es pour la croisiere, on peut passer a la prochaine
+                                  k= 1 ; //on rÃ©initialise la variable des zones
                                   break ;
                               }
 			      
                             }
                         }
-                        else //aucun souhait pour cette croisière, on traite aucune information
+                        else //aucun souhait pour cette croisiÃ¨re, on traite aucune information
                         {
-                            if (k==6) //si on a passé toutes les zones de cette croisière
+                            if (k==6) //si on a passÃ© toutes les zones de cette croisiÃ¨re
                             {
-                                k = 1 ; //on réinitialise la variable des zones
-                                j=j+1 ; //toutes les zones ont été traitées pour la crosière, on peut passer à la prochaine
+                                k = 1 ; //on rÃ©initialise la variable des zones
+                                j=j+1 ; //toutes les zones ont Ã©tÃ© traitÃ©es pour la crosiÃ¨re, on peut passer Ã  la prochaine
                             }
                             else
                             {
@@ -250,11 +250,11 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                             }
 			    
                         }
-			tmp[0]='\0' ; //on réinitialise le tampon 
+			tmp[0]='\0' ; //on rÃ©initialise le tampon 
 			break ;
                     }
-                    case 6 : //on traite la deuxieme sélection de palanetes (croisière satllites = 6planetes)
-		    //Ici, trois cas se présentent : -le premier choix est satellites
+                    case 6 : //on traite la deuxieme sÃ©lection de palanetes (croisiÃ¨re satllites = 6 planetes)
+		    //Ici, trois cas se prÃ©sentent : -le premier choix est satellites
 		    //				     -le deuxieme choix est satellites
 		    //   		             -Aucun des deux choix est satellites
                     {
@@ -358,7 +358,7 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
 			      
                             }
                         }
-                        else //aucun des choix est la croisière satellites
+                        else //aucun des choix est la croisiÃ¨re satellites
                         {
                             if (k==6) //on a parcouru toutes les zones
                             {
@@ -376,12 +376,12 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                     }
                     case 7 : //on traite la troisieme selection de planete (croisiere vie = 6 planetes
                     {
-		    //Ici, trois cas se présentent : -le premier choix est vie
+		    //Ici, trois cas se prÃ©sentent : -le premier choix est vie
 		    //				     -le deuxieme choix est vie
 		    //   		             -Aucun des deux choix est vie
                         if(personneTraite->id1 == 3) //le premier choix est la croisiere vie
                         {
-                            switch (k) //on parcours toutes les zones
+                            switch (k) //on parcourt toutes les zones
                             {
                               case 1 :
                               {
@@ -495,7 +495,7 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                     }
                     case 8 : //La derniere selection est la selection libre, quoiqu'il arrive, il faut la traiter
                     {
-                        switch (k) //on parcours toutes les zones et on rentre les infos dans tabChxLib
+                        switch (k) //on parcourt toutes les zones et on rentre les infos dans tabChxLib
                             {
                               case 1 :
                               {
@@ -536,8 +536,8 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                               {
                                   personneTraite->tabChxLib[5] = malloc(20*sizeof(char)) ;
                                   sprintf(personneTraite->tabChxLib[5],"%s",tmp) ;
-                                  j=j+1 ; //on a tout parcouru toute la ligne
-                                  k= 1  ; //on reinitialise la variable e parcort des zones
+                                  j=j+1 ; //on a parcouru toute la ligne
+                                  k= 1  ; //on reinitialise la variable de parcours des zones
 				  nonfinligne = 0 ; //la ligne est finie, on peut sortir de la boucle
                                   break ;
                               }
@@ -554,25 +554,25 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
 	    i=i+1 ; //on parcourt le tampon ligne
         }
 	//il manque la priorite de la personne a aller chercher dans priorite.csv
-	//on suppose qu'il y a le meme nombre de personne dans chaque fichier et que celles ci sont dans le meme ordre
+	//on suppose qu'il y a le meme nombre de personne dans chaque fichier et que celles-ci sont dans le meme ordre
         i=0 ; 
 	tampon1[0] = '\0' ; //on reinitialise le tampon ligne
-	fgets(tampon1,BUFSIZE,f2) ; //on lit le fichier de priorité ligne par ligne
+	fgets(tampon1,BUFSIZE,f2) ; //on lit le fichier de prioritÃ© ligne par ligne
         tmp[0] = '\0' ; //on reinitialise le tampon chaine
 	j = 1 ; //on initialise le marqueur des cases
 	nonfinligne = 1 ; //on initialise la variable pour la fin de ligne
         while (nonfinligne) //tant que la ligne n'est pas finie
             {
-                if(tampon1[i] == ',' || tampon1[i] == '\n') //on est tombé sur le délimitateur de case
+                if(tampon1[i] == ',' || tampon1[i] == '\n') //on est tombÃ© sur le dÃ©limitateur de case
                 {
-                    if(j==3) //on est sur la case des priorités
+                    if(j==3) //on est sur la case des prioritÃ©s
                     {
                         personneTraite->priorite = atoi(tmp) ;
-                        if(personneTraite->id1 != 4) //si la personne a un premier choix non libre, il passe en priorité devant les personne avec choix libre
+                        if(personneTraite->id1 != 4) //si la personne a un premier choix non libre, il passe en prioritÃ© devant les personne avec choix libre
                         {
                             personneTraite->priorite = personneTraite->priorite + 1000 ; //on rajoute 1000 car il n'y a que 200 personnes, la prio max est 200 donc en rajoutant 1000, elle passe devant
                         }
-			nonfinligne = 0 ; //on est arrivé à la fin de la ligne
+			nonfinligne = 0 ; //on est arrivÃ© Ã  la fin de la ligne
                     }
                     j=j+1 ;
                     tmp[0] = '\0' ; //on reinitialise le tampon chaine
@@ -584,7 +584,7 @@ tas convertir_t_personne(FILE * f1,FILE * f2)
                 i=i+1 ;
 
             } 
-	inserer_tas(&tasP,personneTraite) ; //on insere la personne totalement traitée au tas
+	inserer_tas(&tasP,personneTraite) ; //on insere la personne totalement traitÃ©e au tas
 	tampon1[0] = '\0' ; //on reinitialise le tampon ligne
     }
     return tasP ; //la fonction retourne le tas complet
@@ -595,7 +595,7 @@ liste_planete * convertir_t_planete ( FILE * f )
 {
 
     liste_planete * Tabplanete = malloc(6*sizeof(liste_planete)) ; //on alloue la memoire pour le tableau de liste de planete
-    int k=0 ; //on vas creer la liste de planete pour chaque zone
+    int k=0 ; //on va creer la liste de planete pour chaque zone
     for(k=0;k<6;k=k+1)
     {
 	Tabplanete[k] = creer_liste_planete() ;
@@ -659,7 +659,7 @@ int nombreligne(FILE * f)
 	i=i+1 ;
 	tampon[0]='\0' ;
     }
-    fseek(f,0,SEEK_SET) ; //on se remet au début du fichier
+    fseek(f,0,SEEK_SET) ; //on se remet au dÃ©but du fichier
     return i ;
 }
 
