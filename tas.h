@@ -50,7 +50,7 @@ void reorganiser_tas_retirer(tas*);
 
 /*@requires indice valide
   @assigns nothing
-  @ensures la parité de l'indice ind (retourne 1 si impair, 0 sinon) */
+  @ensures la parité de l'indice ind (retourne 1 si pair, 0 sinon) */
 int est_pair(int ind);
 
 /*@requires pointeur sur tas valide
