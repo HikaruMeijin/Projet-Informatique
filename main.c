@@ -52,7 +52,7 @@ int dansContrainte(char* nomPlanete,char*** contrainte,int partie,int size){
   int indice=-1;
   for(i=0;i<size;i=i+1){
     if(strcmp(nomPlanete,contrainte[partie][i])==0){
-      indice=1;
+      indice=i;
       break;
     }
   }
@@ -232,12 +232,11 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
       inserer_tas(&tasCroisiere[3],current);/*Sinon on assigne au choix libre*/
     }
   }
-  printf("fin boucle\n");
   /*--TRAITEMENT DES PLANETES DANS CROISIERE--*/
   char* imposition;
   planete Pimposition;
   int compte=0;
-  for(i=0;i<3;i=i+1){/*Pour chaque croisière organisée*/
+  for(i=0;i<3;i=i+1){/*Pour chaque croisière organisée*/;
     for(j=0;j<6;j=j+1){/*Pour chaque zone*/
       compte=0;
       tas tasTampon=creer_tas();
@@ -259,7 +258,7 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
 	    inserer_liste_personne(&tamponPersonne,current);/*tampon*/
 	  }
 	  else{
-	    supprimerPlace(Croisiere[3],j,current->tabChxOrg1[j]);/*on supprime la place*/
+	    supprimerPlace(Croisiere[3],j,current->tabChxOrg2[j]);/*on supprime la place*/
 	    inserer_tas(&tasTampon,current);
 	  }
 	}
@@ -296,10 +295,6 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
   while(tas_vide(tasCroisiere[3])==0){
     current=retirer_tas(&tasCroisiere[3]);/*on retire les client par ordre de priorité*/
     current->chxFin=3;/*on traite les choix libre, on rerègle leurs choix*/
-    printf("AVANT\n");
-    for(i=0;i<6;i=i+1){
-       printf("choix %d des planetes : %s\n",i,current->tabChxLib[i]);
-    }
     if(respectContrainte(current->tabChxLib,tContrainte,nbLigne)==0){
       inserer_liste_personne(&nonRespect,current);/*on isole ceux qui ne respectent pas les contraintes*/
     }
@@ -311,7 +306,6 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
 	Pimplique = convertToPlanete(implique,Croisiere[3]);/*on récupere les objets pout tester les nb de places*/
 	Pimpliquant = convertToPlanete(impliquant,Croisiere[3]);
 	if((dansLesChoix(current->tabChxLib,implique)==1) && (dansLesChoix(current->tabChxLib,impliquant)==0) && (Pimpliquant->nbPlaces > Pimplique->nbPlaces - 1)){/*on vérifie qu'il reste des places dans les planetes contraintes*/
-	  printf("Pas de place sans chier les contrainte\n");
 	  inserer_liste_personne(&nonPlace,current);/*pas de place => on insère*/
 	  alreadyInsert=1;
 	  break;
@@ -368,6 +362,7 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
 	    else{
 	      if(choixPlanetePossible(Croisiere[3],i,choix)==1){
 		current->assigned[i]=1; /*le nombre de place est mis à jour dans la fonction dans le test*/
+		current->tabChxLib[i]=choix;
 	      }
 	      else{
 		inserer_liste_personne(&nonPlace,current);
@@ -378,11 +373,6 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
 	  }
 	}
 	if (alreadyInsert==0){
-	  printf("APRES\n");
-	   for(i=0;i<6;i=i+1){
-	     printf("choix %d des planetes : %s\n",i,current->tabChxLib[i]);
-	   }
-	   printf("\n\n");
 	  ajout_ligne(current,fFinal);
 	}
       }
@@ -397,6 +387,7 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
       current=nonRespect->val;
       nonRespect=nonRespect->next;
     }
+    
     for(i=0;i<6;i=i+1){
       if (current->assigned[i] == 0){
 	choix=current->tabChxLib[i];
@@ -473,7 +464,7 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
 		implique=tContrainte[1][indice];
 		Pimplique=convertToPlanete(implique,Croisiere[3]);
 		zone=quelZone(implique,Croisiere[3]);
-		if(Pimplique->nbPlaces > 0 && current->assigned[zone]){
+		if(Pimplique->nbPlaces > 0 && current->assigned[zone]==0){
 		  current->tabChxLib[i]=imposition;
 		  current->tabChxLib[zone]=implique;
 	          supprimerPlace(Croisiere[3],i,imposition);
@@ -495,13 +486,14 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
       zone=quelZone(implique,Croisiere[3]);
       if(current->assigned[zone]==0){
 	current->tabChxLib[zone]=premiereDestPossible(Croisiere[3],zone);
+	current->assigned[zone]=1;
       }
     }
     for(i=0;i<6;i=i+1){
-      /*if(current->assigned[i]==0){
+      if(current->assigned[i]==0){
 	printf("Erreur : planete non assigné");
 	exit(1);
-	}*/
+	}
     }
     ajout_ligne(current,fFinal);
   }
