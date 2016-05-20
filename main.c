@@ -23,6 +23,7 @@ planete convertToPlanete(char* nomPlanete,liste_planete* toutePlanete){
       if(strcmp(planeteCurr->nom,nomPlanete)==0){
 	return planeteCurr;
       }
+      currentZone=currentZone->next;
     }
   }
   printf("Erreur on convertToPlanete : Planete '%s' introuvable",nomPlanete);
@@ -74,27 +75,21 @@ int dansLesChoix(char* choix[],char* nomPlanete){
   @assign rien
   @ensure renvoi 1 si les contrainte sont respecter 0 sinon*/
 int respectContrainte(char* choix[],char*** contrainte,int size){
-  printf(" entrée respectContrainte\n nbLigne : %d\n",size);
   int respect=1;
   int i;
   int j;
   int k;
   for(i=0;i<size;i=i+1){
-    printf("ligne %d des contrainte\n",i);
     for(j=0;j<6;j=j+1){
-      printf("choix n_%d\n",j);
       if(strcmp(choix[j],contrainte[0][i])==0){
-	printf("le choix j correspond à un impliquant\n");
 	respect=0;
 	for(k=0;k<6;k=k+1){
-	  printf("choix n_%d\n",k);
 	  if(strcmp(choix[k],contrainte[1][i])==0){
-	    printf("l'implique a été trouvé, c'est bon\n");
 	    respect=1;
 	    break;
 	  }
 	}
-	if(respect==0){printf("l'implique na pas été trouvé\n");return 0;}
+	if(respect==0){return 0;}
       }
     }
   }
@@ -178,7 +173,8 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
     exit(1);
   }
   int i,j;
-  FILE* fFinal=fopen("~/Bureau/affectation.csv","a");
+  remove("affectation.csv");
+  FILE* fFinal=fopen("affectation.csv","a");
   FILE* fplanete=fopen(argv[1],"r");
   FILE* fcroisiere1=fopen(argv[2],"r");
   FILE* fcroisiere2=fopen(argv[3],"r");
@@ -242,9 +238,7 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
   planete Pimposition;
   int compte=0;
   for(i=0;i<3;i=i+1){/*Pour chaque croisière organisée*/
-    printf("Croisière %d\n",i);
     for(j=0;j<6;j=j+1){/*Pour chaque zone*/
-      printf("  Zone %d\n",j);
       compte=0;
       tas tasTampon=creer_tas();
       liste_personne tamponPersonne = creer_liste_personne();
@@ -270,8 +264,6 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
 	  }
 	}
       }
-      printf("compte : %d\n",compte);
-      printf("fin premiere boucle\n");
       while(liste_personne_vide(tamponPersonne)==0){/*on parcours les personnes dont le choix est impossible*/
 	current=tamponPersonne->val;
 	imposition = premiereDestPossible(Croisiere[i],j);/*on stock dans imposition la première planete ou il y a de la place*/
@@ -281,15 +273,12 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
 	inserer_tas(&tasTampon,current);
 	tamponPersonne=tamponPersonne->next;
       }
-      printf("fin deuxième boucle\n");
       tasCroisiere[i]=tasTampon;
     }
-    /*while(tas_vide(tasCroisiere[i])==0){
-      printf("passage while\n");
+    while(tas_vide(tasCroisiere[i])==0){
       ajout_ligne(retirer_tas(&tasCroisiere[i]),fFinal);
-      }*/
+    }
   }
-  printf("fin traitement croisière\n");
   /*TRAITEMENT DES CHOIX LIBRE*/
   liste_personne nonRespect = creer_liste_personne();/*on stock ici les personnes ne respectant pas les contraintes*/
   liste_personne nonPlace = creer_liste_personne();/*Et ici les personnes sans destinations, faute de place*/
@@ -300,34 +289,35 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
   planete Pimplique;
   planete Pimpliquant;
   planete Pchoix;
-  char alreadyInsert;
+  int alreadyInsert;
   int indice;
   int indice2;
   int zone;
   while(tas_vide(tasCroisiere[3])==0){
-    printf("infini?\n");
     current=retirer_tas(&tasCroisiere[3]);/*on retire les client par ordre de priorité*/
     current->chxFin=3;/*on traite les choix libre, on rerègle leurs choix*/
-    printf(" Traitement de %s %s\n",current->nom,current->prenom);
+    printf("AVANT\n");
+    for(i=0;i<6;i=i+1){
+       printf("choix %d des planetes : %s\n",i,current->tabChxLib[i]);
+    }
     if(respectContrainte(current->tabChxLib,tContrainte,nbLigne)==0){
-      printf(" %s %s ne respecte pas les contrainte\n",current->nom,current->prenom);
       inserer_liste_personne(&nonRespect,current);/*on isole ceux qui ne respectent pas les contraintes*/
     }
     else{
-      alreadyInsert='0';/*on initialise à : il n'a pas été inserer dans les autres listes (il respect les contrainte, et il y a de la place*/
+      alreadyInsert=0;/*on initialise à : il n'a pas été inserer dans les autres listes (il respect les contrainte, et il y a de la place*/
       for(i=0;i<nbLigne;i=i+1){/*parcours du tableau des contraintes*/
-	printf("passage dans les contrainte : %d",i);
 	implique=tContrainte[1][i];/*planete impliquée par une autre*/
 	impliquant=tContrainte[0][i];/*Planete qui implique une autre*/
 	Pimplique = convertToPlanete(implique,Croisiere[3]);/*on récupere les objets pout tester les nb de places*/
 	Pimpliquant = convertToPlanete(impliquant,Croisiere[3]);
 	if((dansLesChoix(current->tabChxLib,implique)==1) && (dansLesChoix(current->tabChxLib,impliquant)==0) && (Pimpliquant->nbPlaces > Pimplique->nbPlaces - 1)){/*on vérifie qu'il reste des places dans les planetes contraintes*/
+	  printf("Pas de place sans chier les contrainte\n");
 	  inserer_liste_personne(&nonPlace,current);/*pas de place => on insère*/
-	  alreadyInsert='1';
+	  alreadyInsert=1;
 	  break;
 	}
       }
-      if(alreadyInsert == '0'){/*traitement uniquement si current n'a pas bouger vers les autres listes*/
+      if(alreadyInsert == 0){/*traitement uniquement si current n'a pas bouger vers les autres listes*/
 	for(i=0;i<6;i=i+1){/*pour toutes les zones*/
 	  if(current->assigned[i]==0){/*si la zone n'est pas déja assignée*/
 	    choix=current->tabChxLib[i];/*on retient son choix*/
@@ -339,7 +329,7 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
 	      Pimplique = convertToPlanete(implique,Croisiere[3]);
 	      if((Pchoix->nbPlaces <= 0) || (Pimplique->nbPlaces <= 0)){/*si ya plus de place*/
 		inserer_liste_personne(&nonPlace,current);/*on ajoute la personne dans la liste de ceux qui n'ont pas trouvé de place*/
-		alreadyInsert='1';/*on indique qu'il a été inséré dans une liste*/
+		alreadyInsert=1;/*on indique qu'il a été inséré dans une liste*/
 		break;
 	      }
 	      else{/*sinon pas de soucis on ajoute les 2 planetes a leurs destinations*/
@@ -367,7 +357,7 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
 	      }
 	      else if((Pchoix->nbPlaces) - 1 < (Pimpliquant->nbPlaces)){
 		inserer_liste_personne(&nonPlace,current);
-		alreadyInsert='1';
+		alreadyInsert=1;
 		break;
 	      }
 	      else{
@@ -381,20 +371,24 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
 	      }
 	      else{
 		inserer_liste_personne(&nonPlace,current);
-	        alreadyInsert='1';
+	        alreadyInsert=1;
 		break;
 	      }
 	    }
 	  }
 	}
-	if (alreadyInsert=='0'){
-	   ajout_ligne(current,fFinal);
+	if (alreadyInsert==0){
+	  printf("APRES\n");
+	   for(i=0;i<6;i=i+1){
+	     printf("choix %d des planetes : %s\n",i,current->tabChxLib[i]);
+	   }
+	   printf("\n\n");
+	  ajout_ligne(current,fFinal);
 	}
       }
     }
   }
   while(liste_personne_vide(nonPlace)==0 || liste_personne_vide(nonRespect)==0){
-    printf("infini 2?\n");
     if(liste_personne_vide(nonPlace)==0){
       current=nonPlace->val;
       nonPlace=nonPlace->next;
@@ -490,6 +484,7 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
 		}
 	      }
 	    }
+	    parcoursPlanete=parcoursPlanete->next;
 	  }
 	}
       }
@@ -503,10 +498,10 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
       }
     }
     for(i=0;i<6;i=i+1){
-      if(current->assigned[i]==0){
+      /*if(current->assigned[i]==0){
 	printf("Erreur : planete non assigné");
 	exit(1);
-      }
+	}*/
     }
     ajout_ligne(current,fFinal);
   }
