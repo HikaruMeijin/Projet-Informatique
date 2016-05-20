@@ -169,12 +169,19 @@ char* premiereDestPossible(liste_planete* choixCroisiere,int zone){
 
 int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes, croisière 1, croisière 2 , croisière 3, personnes, priorités, contraintes*/
   if(argc!=8){
-    fprintf(stderr,"nombre incorrect d'arguments. Attendu : 7");
+    fprintf(stderr,"%s : nombre incorrect d'arguments. Attendu : 7\n",argv[0]);
     exit(1);
   }
+  if(strcmp(argv[1],"destinations.csv")!=0 || strcmp(argv[2],"croisiere_planetes.csv")!=0 || strcmp(argv[3],"croisiere_satellites.csv")!=0 || strcmp(argv[4],"croisiere_vie.csv")!=0 || strcmp(argv[5],"souhaits_voyageurs.csv")!=0 || strcmp(argv[6],"priorites.csv")!=0 || strcmp(argv[7],"contraintes.csv")!=0)
+  {
+    fprintf(stderr,"%s : arguments invalides veuillez respecter l'orthographe du manuel\n",argv[0]) ;
+    exit(1) ;
+  }
   int i,j;
-  remove("affectation.csv");
-  FILE* fFinal=fopen("affectation.csv","a");
+  mkdir("resultat",S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+  remove("resultat/affectation.csv");
+  
+  FILE* fFinal=fopen("resultat/affectation.csv","a");
   FILE* fplanete=fopen(argv[1],"r");
   FILE* fcroisiere1=fopen(argv[2],"r");
   FILE* fcroisiere2=fopen(argv[3],"r");
@@ -182,6 +189,11 @@ int main(int argc , char* argv[]){/*Ordre des tableau entrée : toutes planetes,
   FILE* fpersonnes=fopen(argv[5],"r");
   FILE* fpriorite=fopen(argv[6],"r");
   FILE* fcontrainte=fopen(argv[7],"r");
+  if(fFinal == NULL || fplanete == NULL || fcroisiere1 == NULL || fcroisiere2 == NULL || fcroisiere3 == NULL || fpersonnes == NULL || fpriorite == NULL || fcontrainte == NULL)
+  {
+	fprintf(stderr,"%s : erreur lors de l'ouverture d'un fichier\n",argv[0]) ;
+	exit(1) ;
+  }
   tas tPersonne = creer_tas();/*Tas stockant l'ensemble des voyageur*/
   tas* tasCroisiere=(tas*)malloc(4*sizeof(tas));;
   for (i=0;i<4;i=i+1){
